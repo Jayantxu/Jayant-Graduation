@@ -12,6 +12,7 @@ export default {
 
 <style lang="scss">
 @import "./assets/Sass/normalize.css";
+@import "./assets/Sass/common.css";
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
