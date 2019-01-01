@@ -1,5 +1,5 @@
 html {
-    font-size: 100px !important;
+    font-size: 100px;
 }
 /*设置几个基准字体*/
 .font22 {
@@ -114,4 +114,8 @@ ml60 {
 }
 .w300 {
     width: 3rem;
+}
+/*element-ui的提示信息的font-size*/
+.el-message {
+    font-size: 16px !important;
 }
