@@ -2,7 +2,7 @@
     <div class="registerhtml">
         <topheader></topheader>
         <div class="registerForm font16">
-          <el-row>
+          <el-row >
             <!-- 撑位置用 -->
             <el-col :xs="2" :sm="7" :md="8" :lg="8" :xl="8">
               <div class="col-content font22 mt10">
@@ -113,7 +113,14 @@ export default {
     submitForm (registerRuleForm) {
       this.$refs[registerRuleForm].validate((valid) => {
         if (valid) {
-          this.$message({message: '注册成功', type: 'success'})
+          this.$http.post('/registeruser', JSON.stringify(this.registerRuleForm))
+          .then((response) => {
+            console.log(response)
+          })
+          .then((err) => {
+            console.log(err)
+          })
+          //  this.$message({message: '注册成功', type: 'success'})
         } else {
           this.$message.error('表单错误')
           return false
@@ -129,10 +136,11 @@ export default {
 <style lang="scss">
   .registerhtml {
     height: 100vh;
-    top: 0.64rem;
     position: relative;
     background-color: #b5b7bd;
   }
   .registerForm {
+    top: 1rem;
+    position: relative;
   }
 </style>

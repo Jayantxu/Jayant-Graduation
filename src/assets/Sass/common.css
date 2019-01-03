@@ -1,6 +1,12 @@
 html {
     font-size: 100px;
 }
+.float-r {
+    float: right;
+}
+.float-l {
+    float: left;
+}
 /*设置几个基准字体*/
 .font22 {
     font-size:  0.22rem !important;
@@ -39,7 +45,7 @@ html {
 .ml80 {
     margin-left: 0.8rem;
 }
-ml60 {
+.ml60 {
     margin-left: 0.6rem;
 }
 .ml40 {
@@ -62,6 +68,9 @@ ml60 {
 }
 .mt40 {
     margin-top: 0.4rem;
+}
+.mt80 {
+    margin-top:0.8rem;
 }
 .mt15 {
     margin-top: 0.15rem;

@@ -1,6 +1,6 @@
 <template>
     <div class="TOPhead">
-        <el-row :gutter="20" class="headRow-bg">
+        <el-row :gutter="10" class="headRow-bg">
             <el-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4">
                 <div class="col-content font22 mt5">
                     <i class="icon iconfont icon-shu iconfont48">
@@ -8,34 +8,40 @@
                 </div>
             </el-col>
             <!-- 撑位置用 -->
-            <el-col :xs="0" :sm="4" :md="6" :lg="8" :xl="4">
+            <el-col :xs="0" :sm="3" :md="6" :lg="7" :xl="4">
                 <div class="col-content font22 mt10">
                 </div>
             </el-col>
-            <el-col :xs="6" :sm="6" :md="6" :lg="5" :xl="8">
+            <!-- 搜索框 -->
+            <el-col :xs="10" :sm="7" :md="6" :lg="6" :xl="8">
                 <div class="col-content font22 mt10">
-                    <el-input v-model="findArticle" placeholder="请输入相关书名">
+                    <el-input style="width:70%;" placeholder="请输入相关书名">
                     </el-input>
+                    <i class="icon iconfont icon-sousuo iconfont32 float-r mt5 ml10">
+                    </i>
                 </div>
             </el-col>
             <!-- 撑位置用 -->
-            <el-col :xs="0" :sm="1" :md="3" :lg="2" :xl="4">
+            <el-col :xs="1" :sm="1" :md="3" :lg="2" :xl="4">
                 <div class="col-content font22 mt10">
                 </div>
             </el-col>
-            <el-col :xs="3" :sm="2" :md="1" :lg="1" :xl="4">
+            <!-- 首页icon -->
+            <el-col :xs="2" :sm="2" :md="1" :lg="1" :xl="4">
                 <div class="col-content font22 mt10">
                     <i class="icon iconfont icon-home_icon iconfont32">
                     </i>
                 </div>
             </el-col>
-            <el-col :xs="3" :sm="2" :md="1" :lg="1" :xl="4">
+            <!-- 用户icon -->
+            <el-col :xs="0" :sm="2" :md="1" :lg="1" :xl="4">
                 <div class="col-content font22 mt10">
-                    <i class="icon iconfont icon-tubiaozhizuomobanyihuifu- iconfont32 ml15">
+                    <i class="icon iconfont icon-tubiaozhizuomobanyihuifu- iconfont32 ">
                     </i>
                 </div>
             </el-col>
-            <el-col :xs="8" :sm="4" :md="3" :lg="3" :xl="4">
+            <!-- 登录/注册 -->
+            <el-col :xs="7" :sm="4" :md="3" :lg="3" :xl="4">
                 <div class="col-content font16 mt15">
                     <i class="icon iconfont icon-denglu iconfont25">
                     </i>
