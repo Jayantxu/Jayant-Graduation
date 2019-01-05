@@ -1,6 +1,8 @@
 var express = require('express')
 var router = express.Router()
+var registerDao = require('../dao/registerDao')
+// 注册用户
 router.post('/registeruser', function (req, res, next) {
-  res.json({name: 'aaa', pwd: '123'})
+  registerDao.add(req, res, next)
 })
 module.exports = router

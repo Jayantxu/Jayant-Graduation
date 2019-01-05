@@ -112,9 +112,9 @@ export default {
   methods: {
     submitForm (registerRuleForm) {
       this.$refs[registerRuleForm].validate((valid) => {
-        if (valid) {
+        if (!valid) {
           this.$http.post(
-            '/registeruser',
+            '/api/user/registeruser',
             JSON.stringify(this.registerRuleForm))
             .then((res) => {
               console.log(res)

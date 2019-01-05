@@ -1,3 +1,4 @@
+/* sql语句存放 */
 var sqlMap = {
   user: {
     add: 'insert into userinfo (username, password, question, answer, permission) values (?,?,?,?,?)'
