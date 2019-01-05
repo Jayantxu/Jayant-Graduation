@@ -11,13 +11,13 @@
             <el-col :xs="20" :sm="10" :md="8" :lg="8" :xl="8" class="mt40">
               <el-form :model="registerRuleForm" :rules="rules" ref="registerRuleForm" label-width="80px">
                 <el-form-item label="账户" prop="username">
-                  <el-input v-model="registerRuleForm.username"></el-input>
+                  <el-input v-model="registerRuleForm.username" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
-                  <el-input type="password" v-model="registerRuleForm.password"></el-input>
+                  <el-input type="password" v-model="registerRuleForm.password" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="确认密码" prop="doublepassword">
-                  <el-input type="password" v-model="registerRuleForm.doublepassword"></el-input>
+                  <el-input type="password" v-model="registerRuleForm.doublepassword" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="选择问题" prop="question">
                   <el-select v-model="registerRuleForm.question" style="width:100%;" placeholder="请选择问题">
@@ -32,7 +32,7 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item label="回答" prop="answer">
-                  <el-input v-model="registerRuleForm.answer"></el-input>
+                  <el-input v-model="registerRuleForm.answer" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary" @click="submitForm('registerRuleForm')">注册</el-button>
@@ -113,13 +113,15 @@ export default {
     submitForm (registerRuleForm) {
       this.$refs[registerRuleForm].validate((valid) => {
         if (valid) {
-          this.$http.post('/registeruser', JSON.stringify(this.registerRuleForm))
-          .then((response) => {
-            console.log(response)
-          })
-          .then((err) => {
-            console.log(err)
-          })
+          this.$http.post(
+            '/registeruser',
+            JSON.stringify(this.registerRuleForm))
+            .then((res) => {
+              console.log(res)
+            })
+            .then((err) => {
+              console.log(err)
+            })
           //  this.$message({message: '注册成功', type: 'success'})
         } else {
           this.$message.error('表单错误')
