@@ -10,7 +10,7 @@
 <br/>├── config                      // 配置
 <br/>│   ├── dev.env.js
 <br/>│   ├── prod.env.js           
-<br/>│   ├── index.js                // 配置控制
+<br/>│   └── index.js                // 配置控制
 <br/>|
 <br/>├── service                     //服务端代码
 <br/>│   ├── dao                     //dao
