@@ -4,6 +4,9 @@
 <br/>作者： Jayant
 <br/>时间：2019.1.2
 
+#### 项目目录结构介绍
+
+
 #### 系统运行前置安装条件：
 ###### Node v6.12.2
 ###### npm v3.10.10
@@ -14,28 +17,26 @@
 #### 该系统主要使用技术或工具
 ###### vue-cli、express、Node、mysql、element-ui、VSCode
 
-# 后端服务 -> service
-启动后端服务：
+#### 后端服务 
+###### 启动后端服务：
+```bash
+# 进入后台目录文件
 cd service
+# app listening on port 3000
 node app.js
-
-启动node-inspector调试：!需关闭自主打开的服务，闲置下3000端口
-cmd:
-node --debug app.js
-新开cmd：
-node-inspector --web-port=3000
-在chorme中进行断点调试
-
-``` bash
-# install dependencies
-npm install
-# serve with hot reload at localhost:8001
-npm run dev
-# build for production with minification
-npm run build
-# build for production and view the bundle analyzer report
-npm run build --report
 ```
-# python v2.7.12
-# Node v6.12.2
-# npm v3.10.10
+#### 启动node-inspector进行后端代码调试
+```bash
+# service中进行debug
+node --debug app.js
+# 新建cmd，并输入以下命令
+node-inspector --web-port=3000，Visit http://127.0.0.1:3000/?port=5858 to start debugging.
+# chorme中进行断点调试
+```
+#### 运行前端工程
+``` bash
+# 安装开发依赖包
+npm install
+# 开启服务于热更新在8001端口
+npm run dev
+```
