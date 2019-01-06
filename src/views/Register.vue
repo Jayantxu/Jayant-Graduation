@@ -118,12 +118,12 @@ export default {
             {
               params: {
                 username: this.registerRuleForm.username,
-                password:this.registerRuleForm.password,
-                question:this.registerRuleForm.question,
-                answer:this.registerRuleForm.answer,
+                password: this.registerRuleForm.password,
+                question: this.registerRuleForm.question,
+                answer: this.registerRuleForm.answer
               }
-            },
-            )
+            }
+          )
             .then((res) => {
               console.log(res)
             })

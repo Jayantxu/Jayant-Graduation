@@ -41,7 +41,12 @@ module.exports = {
             if (err) {
               throw new Error('注册用户插入语句出错')
             }
-            console.log(result)
+            result = {
+              code: '0',
+              msg: '用户注册成功'
+            }
+            jsonWrite(res, result)
+            connection.release()
           })
         }
       })
