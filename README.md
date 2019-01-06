@@ -5,7 +5,28 @@
 <br/>时间：2019.1.2
 
 #### 项目目录结构介绍:
-
+├── Readme.md                   // READMEmd
+├── index.js                    // 入口html
+├── config                      // 配置
+│   ├── dev.env.js
+│   ├── prod.env.js           
+│   ├── index.js                // 配置控制
+|
+├── service                     //服务端代码
+│   ├── dao                     //dao
+│   ├── routes                  //路由
+│   └── db                      //数据库配置及相关语句
+│       ├── db.js               //数据库连接配置
+│       └── sqlMap.js           //各语句
+├── src 
+│   ├── assets                  
+│   ├── components              //组件
+│   ├── routes                  //路由
+│   ├── views                   //页面
+│   ├── App.vue                 //主
+│   └── main.js                        
+├── static                      //静态文件存放
+└── 
 
 #### 系统运行前置安装条件：
 ###### Node v6.12.2
