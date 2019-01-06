@@ -5,6 +5,7 @@
 <br/>时间：2019.1.2
 
 #### 项目目录结构介绍:
+```bash
 <br/>├── Readme.md                   // READMEmd
 <br/>├── index.js                    // 入口html
 <br/>├── config                      // 配置
@@ -27,7 +28,7 @@
 <br/>│   └── main.js                        
 <br/>├── static                      //静态文件存放
 <br/>└── 
-
+```
 #### 系统运行前置安装条件：
 ###### Node v6.12.2
 ###### npm v3.10.10
