@@ -1,15 +1,19 @@
 项目名称
 ====
-此项目
+启动于2019.1.1，用于毕设，书籍评价系统，用于广泛分享读者间的阅读总结，技巧等类博文系统
+
+###上手指南
+#####系统运行前置安装条件：
+######Node v6.12.2
+######npm v3.10.10
+######node-inspector v1.1.2
+######python v2.7.12
+###### mysql
 
 作者 : Jayant
 用途：书评分享系统
 技术栈：vue-cli、express、Node、mysql、element-ui
 使用注意：
-# python v2.7.12
-# Node v6.12.2
-# npm v3.10.10
-# node-inspector v1.1.2
 
 # 后端服务 -> service
 启动后端服务：
