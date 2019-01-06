@@ -5,9 +5,9 @@
 <br/>时间：2019.1.2
 
 #### 项目目录结构介绍:
-├── Readme.md                   // READMEmd
-├── index.js                    // 入口html
-├── config                      // 配置
+<br/>├── Readme.md                   // READMEmd
+<br/>├── index.js                    // 入口html
+<br/>├── config                      // 配置
 │   ├── dev.env.js
 │   ├── prod.env.js           
 │   ├── index.js                // 配置控制
