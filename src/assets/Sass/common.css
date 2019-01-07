@@ -1,6 +1,9 @@
 html {
     font-size: 100px;
 }
+.normal-font-size {
+    font-size: 16px;
+}
 .float-r {
     float: right;
 }
@@ -124,7 +127,29 @@ html {
 .w300 {
     width: 3rem;
 }
+/*百分百宽度*/
+.vw100 {
+    width:100%;
+}
+.vw50 {
+    width: 50%;
+}
+
 /*element-ui的提示信息的font-size*/
 .el-message {
     font-size: 16px !important;
+}
+/*字位置*/
+.text-center {
+    text-align: center;
+}
+.text-left {
+    text-align: left;
+}
+.text-right {
+    text-align: right;
+}
+/* display */
+.inline-block {
+    display: inline-block;
 }

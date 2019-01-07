@@ -126,6 +126,21 @@ export default {
           )
             .then((res) => {
               console.log(res)
+              if (res.data.code === '0') {
+                this.$message({
+                  message: `恭喜，${res.data.msg}，将跳转主页`,
+                  type: 'success'
+                })
+                setTimeout(function () {
+                  location.href = '/'
+                }, 2000)
+              } else {
+                this.$message({
+                  message: `警告，${res.data.msg}`,
+                  type: 'warning'
+                })
+                this.$refs[registerRuleForm].resetFields()
+              }
             })
             .then((err) => {
               console.log(err)
