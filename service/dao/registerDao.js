@@ -2,6 +2,8 @@
 var mysql = require('mysql')
 var $conn = require('../db/db')
 var $sql = require('../db/sqlMap')
+// 引入加解密处理方法
+var bcryptFun = require('../public/bcrypt')
 // 使用连接池,提升性能
 var pool = mysql.createPool($conn.mysql)
 var jsonWrite = function (res, ret) {
@@ -19,6 +21,8 @@ module.exports = {
     var $params = req.body.params
     // 打印一下前端的数据
     // console.log($params)
+    // 对密码加密
+    $params.password = bcryptFun.bcryptInfo($params.password)
     pool.getConnection(function (err, connection) {
       if (err) {
         throw new Error('注册用户连接池出错')
@@ -31,7 +35,7 @@ module.exports = {
         var $hasuser = JSON.parse(result).length
         if ($hasuser > 0) {
           result = {
-            code: '0',
+            code: '1',
             msg: '用户已存在，请更换用户名'
           }
           jsonWrite(res, result)
