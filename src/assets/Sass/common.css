@@ -1,0 +1,155 @@
+html {
+    font-size: 100px;
+}
+.normal-font-size {
+    font-size: 16px;
+}
+.float-r {
+    float: right;
+}
+.float-l {
+    float: left;
+}
+/*设置几个基准字体*/
+.font22 {
+    font-size:  0.22rem !important;
+}
+.font16 {
+    font-size:  0.16rem !important;
+}
+.font14 {
+    font-size:  0.14rem !important;
+}
+.font12 {
+    font-size:  0.12rem !important;
+}
+/*图标icon的大小*/
+.iconfont48 {
+    height: 0.48rem;
+    width: 0.48rem;
+    font-size: 0.48rem;
+}
+.iconfont32 {
+    height: 0.32rem;
+    width: 0.32rem;
+    font-size: 0.32rem;
+}
+.iconfont25 {
+    height: 0.25rem;
+    width: 0.25rem;
+    font-size: 0.25rem;
+}
+.iconfont16 {
+    height: 0.16rem;
+    width: 0.16rem;
+    font-size: 0.16rem;
+}
+/*各种边距*/
+.ml80 {
+    margin-left: 0.8rem;
+}
+.ml60 {
+    margin-left: 0.6rem;
+}
+.ml40 {
+    margin-left: 0.4rem;
+}
+.ml20 {
+    margin-left: 0.2rem;
+}
+.ml15 {
+    margin-left: 0.15rem;
+}
+.ml10 {
+    margin-left: 0.1rem;
+}
+.ml5 {
+    margin-left: 0.05rem;
+}
+.mt20 {
+    margin-top: 0.2rem;
+}
+.mt40 {
+    margin-top: 0.4rem;
+}
+.mt80 {
+    margin-top:0.8rem;
+}
+.mt15 {
+    margin-top: 0.15rem;
+}
+.mt10 {
+    margin-top: 0.1rem;
+}
+.mt5 {
+    margin-top: 0.05rem;
+}
+.mr20 {
+    margin-right: 0.2rem;
+}
+.mr40 {
+    margin-right: 0.4rem;
+}
+.mr15 {
+    margin-right: 0.15rem;
+}
+.mr10 {
+    margin-right: 0.1rem;
+}
+.mr5 {
+    margin-right: 0.05rem;
+}
+.mb20 {
+    margin-bottom: 0.2rem;
+}
+.mb40 {
+    margin-bottom: 0.4rem;
+}
+.mb15 {
+    margin-bottom: 0.15rem;
+}
+.mb10 {
+    margin-bottom: 0.1rem;
+}
+.mb5 {
+    margin-bottom: 0.05rem;
+}
+/*宽度*/
+.w100 {
+    width: 1rem;
+}
+.w150 {
+    width: 1.5rem;
+}
+.w200 {
+    width: 2rem;
+}
+.w300 {
+    width: 3rem;
+}
+/*百分百宽度*/
+.vw100 {
+    width:100%;
+}
+.vw50 {
+    width: 50%;
+}
+
+/*element-ui的提示信息的font-size*/
+.el-message {
+    font-size: 16px !important;
+}
+/*字位置*/
+.text-center {
+    text-align: center;
+}
+.text-left {
+    text-align: left;
+}
+.text-right {
+    text-align: right;
+}
+/* display */
+.inline-block {
+    display: inline-block;
+}
