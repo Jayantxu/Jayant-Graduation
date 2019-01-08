@@ -5,11 +5,8 @@ var sqlMap = {
     registerQuery: 'select * from userinfo where username = ?'
   },
   findPWD: {
-    findPWDQuestion: 'select question,answer from userinfo where username = ?',
-    findPWDchangePWD: 'update userinfo SET password = ?  where username = ?'
-  },
-  login: {
-      login: 'select password from userinfo where username = ?'
+    findQuestion: 'select question,answer from userinfo where username = ?',
+    changPWD: 'update userinfo SET password = ? where username = ?'
   }
 }
 module.exports = sqlMap

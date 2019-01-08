@@ -1,9 +1,11 @@
 <template>
-    <div></div>
+    <div>
+        <h1>找回密码</h1>
+    </div>
 </template>
 <script>
-export default {    
+export default {
 }
 </script>
-<style>
+<style lang='scss'>
 </style>

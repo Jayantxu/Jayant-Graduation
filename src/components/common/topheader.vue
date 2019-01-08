@@ -61,7 +61,7 @@
                     <el-input ></el-input>
                 </el-form-item>
             </el-form>
-            <span class="text-right inline-block vw100 hover-click" @click='forgetPWD()'>忘记密码？</span>
+            <span @click='returnfindPWD()' class="text-right inline-block vw100 hover-click">忘记密码？</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="LoginDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="LoginDialogVisible = false">确 定</el-button>
@@ -81,8 +81,8 @@ export default {
     returnRegister: function () {
       location.href = './register'
     },
-    forgetPWD: function() {
-      console.log('忘记密码')
+    returnfindPWD: function () {
+      location.href = './findPWD'
     }
   }
 }
@@ -108,7 +108,10 @@ export default {
         height: 0.45rem;
         border-radius: 1rem;
     }
+<<<<<<< HEAD
     /*悬浮变色与下划线*/
+=======
+>>>>>>> 分享系统--找回密码
     .hover-click {
         cursor: pointer;
         &:hover {
