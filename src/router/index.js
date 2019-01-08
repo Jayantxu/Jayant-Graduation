@@ -17,6 +17,11 @@ export default new Router({
       path: '/register',
       name: 'register',
       component: register
+    },
+    {
+      path: '/findPWD',
+      name: '/findPWD',
+      component: findPWD
     }
   ]
 })

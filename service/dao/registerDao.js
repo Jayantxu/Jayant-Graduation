@@ -3,7 +3,7 @@ var mysql = require('mysql')
 var $conn = require('../db/db')
 var $sql = require('../db/sqlMap')
 // 引入加解密处理方法
-var bcryptFun = require('../public/bcrypt')
+var bcryptFun = require('../public/crypto')
 // 使用连接池,提升性能
 var pool = mysql.createPool($conn.mysql)
 var jsonWrite = function (res, ret) {
@@ -27,7 +27,7 @@ module.exports = {
       if (err) {
         throw new Error('注册用户连接池出错')
       }
-      connection.query($sql.user.registerQuery, $params.username, function (err, result) {
+      connection.query($sql.register.registerQuery, $params.username, function (err, result) {
         if (err) {
           throw new Error('注册用户sql查询语句出错')
         }
@@ -41,7 +41,7 @@ module.exports = {
           jsonWrite(res, result)
           connection.release()
         } else {
-          connection.query($sql.user.registerAdd, [$params.username, $params.password, $params.question, $params.answer], function (err, result) {
+          connection.query($sql.register.registerAdd, [$params.username, $params.password, $params.question, $params.answer], function (err, result) {
             if (err) {
               throw new Error('注册用户插入语句出错')
             }
