@@ -108,10 +108,6 @@ export default {
         height: 0.45rem;
         border-radius: 1rem;
     }
-<<<<<<< HEAD
-    /*悬浮变色与下划线*/
-=======
->>>>>>> 分享系统--找回密码
     .hover-click {
         cursor: pointer;
         &:hover {
