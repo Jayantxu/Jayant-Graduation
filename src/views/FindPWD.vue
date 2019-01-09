@@ -112,11 +112,13 @@ export default {
   },
   methods: {
     findquestion (findPWDRuleForm) {
-      this.$ref[findPWDRuleForm].validate((valid) => {
-        if (valid) {
-          console.log('正确')
+      this.$refs[findPWDRuleForm].validateField('username', (valid) => {
+        if (!valid) {
+          // 正确情况--向后台拿问题
+          this.$http.get()
         } else {
-          console.log('错误')
+          // 错误情况
+          return false
         }
       })
     }
