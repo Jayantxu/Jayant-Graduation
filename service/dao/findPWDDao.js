@@ -17,18 +17,62 @@ var jsonWrite = function (res, ret) {
   }
 }
 module.exports = {
-  find: function (req, res, next) {
+    // 查找用户密保问题
+  findQuestion: function (req, res, next) {
     var $params = req.body.params
     // 打印一下前端的数据
     // 对密码加密
-    $params.password = bcryptFun.bcryptInfo($params.password)
+    var username = $params.username 
     pool.getConnection(function (err, connection) {
       if (err) {
         throw new Error('注册用户连接池出错')
       }
-      connection.query($sql.register.registerQuery, $params.username, function (err, result) {
-        
+      connection.query($sql.findPWD.findQuestion, username, function (err, result) {
+        if (err) {
+            throw new Error('找回密码寻找问题出错')
+        }
+        findquestion = JSON.stringify(result)
+        result = {
+            code: '0',
+            data: findquestion,
+            msg: '查找成功'
+          }
+          jsonWrite(res, result)
+          connection.release()
       })
     })
+  },
+  changePWD: function (req, res, next) {
+    var $params = req.body.params
+    // 打印一下前端的数据
+    // console.log($params)
+    // 对密码加密
+    if ($params.newpassword!==$params.doublenewpassword) {
+        var result = {
+            code:'1',
+            data: {},
+            msg: '密码不一致,请修改'
+        }
+    }
+    $params.username = $params.username
+    $params.newpassword = bcryptFun.bcryptInfo($params.newpassword)
+    pool.getConnection(function (err, connection) {
+        if (err) {
+          throw new Error('找回密码用户连接池出错')
+        }
+        connection.query($sql.findPWD.changPWD, [newpassword, username], function (err, result) {
+          if (err) {
+              throw new Error('找回密码插入新密码出错')
+          }
+          findquestion = JSON.stringify(result)
+          result = {
+              code: '0',
+              data: {},
+              msg: '密码修改成功'
+            }
+            jsonWrite(res, result)
+            connection.release()
+        })
+      })
   }
 }
