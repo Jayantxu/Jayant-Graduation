@@ -35,8 +35,8 @@
                         <el-input type="password" v-model="findPWDRuleForm.doublenewpassword" placeholder="请再次确认新密码" :disabled="find" clearable></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" >确认更改</el-button>
-                        <el-button >重置</el-button>
+                        <el-button type="primary" :disable="find" @click="commitNewPWD(findPWDRuleForm)">确认更改</el-button>
+                        <el-button @click="resetPWDform(findPWDRuleForm)">重置</el-button>
                     </el-form-item>
                 </el-form>
                 </el-col>
@@ -115,23 +115,33 @@ export default {
       this.$refs[findPWDRuleForm].validateField('username', (valid) => {
         if (!valid) {
           // 正确情况--向后台拿问题
-          this.$http.get('/api/findPWD/findQuestion',{
-              params: {
-                  username: this.findPWDRuleForm.username
-              }
+          this.$http.get('/api/findPWD/findQuestion', {
+            params: {
+              username: this.findPWDRuleForm.username
+            }
           })
-          .then((res) => {
+            .then((res) => {
+              // 将找回来的问题给与select,并且打开单选框的可编辑
               console.log(res)
-          })
-          .then((err) => {
+            })
+            .then((err) => {
               console.log(err)
-          }) 
+            })
         } else {
           // 表单错误情况
           this.$message.error('表单错误')
           return false
         }
       })
+    },
+    // 提交新密码
+    commitNewPWD (findPWDRuleForm) {
+      // 验证表单正确性,以上面的验证逻辑验证
+      this.$refs[findPWDRuleForm].validate((valid) => {
+      })
+    },
+    resetPWDform (findPWDRuleForm) {
+      this.$refs[findPWDRuleForm].resetFields()
     }
   }
 }
