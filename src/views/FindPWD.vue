@@ -115,9 +115,20 @@ export default {
       this.$refs[findPWDRuleForm].validateField('username', (valid) => {
         if (!valid) {
           // 正确情况--向后台拿问题
-          this.$http.get()
+          this.$http.get('/api/findPWD/findQuestion',{
+              params: {
+                  username: this.findPWDRuleForm.username
+              }
+          })
+          .then((res) => {
+              console.log(res)
+          })
+          .then((err) => {
+              console.log(err)
+          }) 
         } else {
-          // 错误情况
+          // 表单错误情况
+          this.$message.error('表单错误')
           return false
         }
       })

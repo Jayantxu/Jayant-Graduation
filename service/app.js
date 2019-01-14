@@ -23,4 +23,4 @@ app.listen(3000, () => {
 // 注册用户
 app.use('/api/user', registeruser)
 // 找回密码
-app.use('/api/findPWD',findpwd)
+app.use('/api/findPWD/findQuestion',findpwd)

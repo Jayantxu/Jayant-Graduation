@@ -16,7 +16,10 @@ var jsonWrite = function (res, ret) {
     res.json(ret)
   }
 }
+// 用户数据库答案
+var DBanswer
 module.exports = {
+  
     // 查找用户密保问题
   findQuestion: function (req, res, next) {
     var $params = req.body.params
@@ -31,7 +34,8 @@ module.exports = {
         if (err) {
             throw new Error('找回密码寻找问题出错')
         }
-        findquestion = JSON.stringify(result)
+        userquestion = JSON.stringify(result)
+        DBanswer = 
         result = {
             code: '0',
             data: findquestion,
@@ -47,12 +51,23 @@ module.exports = {
     // 打印一下前端的数据
     // console.log($params)
     // 对密码加密
-    if ($params.newpassword!==$params.doublenewpassword) {
+    if ($params.newpassword===''||$params.newpassword!==$params.doublenewpassword) {
         var result = {
             code:'1',
             data: {},
             msg: '密码不一致,请修改'
         }
+        jsonWrite(res, result)
+        return ;
+    }
+    if($params.answer===''||$params.answer!==DBanswer){
+        var result = {
+            code:'1',
+            data: {},
+            msg: '密保问题错误'
+        }
+        jsonWrite(res, result)
+        return ;
     }
     $params.username = $params.username
     $params.newpassword = bcryptFun.bcryptInfo($params.newpassword)
