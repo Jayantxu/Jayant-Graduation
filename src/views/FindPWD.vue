@@ -14,16 +14,7 @@
                         <el-input v-model="findPWDRuleForm.username" @blur="findquestion('findPWDRuleForm')" placeholder="请输入您的用户名" clearable ></el-input>
                     </el-form-item>
                     <el-form-item label="选择问题" prop="question">
-                    <el-select v-model="findPWDRuleForm.question" style="width:100%;" :disabled="find" placeholder="请选择问题">
-                        <el-option
-                        v-for="item in Cquestion"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        <span style="float: left">{{ item.label }}</span>
-                        <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
-                        </el-option>
-                    </el-select>
+                        <el-input v-model="findPWDRuleForm.question" disabled :placeholder="Acquestion"></el-input>
                     </el-form-item>
                     <el-form-item label="回答" prop="answer">
                         <el-input v-model="findPWDRuleForm.answer" :disabled="find" clearable></el-input>
@@ -35,7 +26,7 @@
                         <el-input type="password" v-model="findPWDRuleForm.doublenewpassword" placeholder="请再次确认新密码" :disabled="find" clearable></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" :disable="find" @click="commitNewPWD(findPWDRuleForm)">确认更改</el-button>
+                        <el-button type="primary" :disabled="find" @click="commitNewPWD(findPWDRuleForm)">确认更改</el-button>
                         <el-button @click="resetPWDform(findPWDRuleForm)">重置</el-button>
                     </el-form-item>
                 </el-form>
@@ -51,10 +42,13 @@
 </template>
 <script>
 import topheader from '@/components/common/topheader'
+// import store from '@/store'
 export default {
   name: 'findPWD',
   components: {
     topheader
+  },
+  computed: {
   },
   data () {
     var validatorPass2 = (rule, value, callback) => {
@@ -67,6 +61,7 @@ export default {
       }
     }
     return {
+      Acquestion: '',
       find: true, // 判断俩密码框是否有禁用,在问题回答正确的前提下
       findPWDRuleForm: {
         username: '',
@@ -96,18 +91,7 @@ export default {
           {required: true, message: '请回答问题', trigger: 'blur'},
           {min: 5, max: 20, message: '答案长度请保持在5-20个字符', trigger: 'blur'}
         ]
-      },
-      Cquestion: [{
-        value: 'Q001',
-        label: '你最喜欢的歌手?'
-      }, {
-        value: 'Q002',
-        label: '你的工作？'
-      }, {
-        value: 'Q003',
-        label: '你最喜欢的书籍？'
       }
-      ]
     }
   },
   methods: {
@@ -122,7 +106,18 @@ export default {
           })
             .then((res) => {
               // 将找回来的问题给与select,并且打开单选框的可编辑
-              console.log(res)
+              var json = res.data
+              if (json.code !== '0') {
+                this.$message({
+                  message: `警告，${json.msg}`,
+                  type: 'warning'
+                })
+              } else {
+                // 让禁用可用
+                this.find = false
+                var boolbool = json.data
+                this.Acquestion = this.$store.state.question[boolbool]
+              }
             })
             .then((err) => {
               console.log(err)
