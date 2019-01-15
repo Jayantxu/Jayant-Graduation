@@ -26,7 +26,7 @@
                         <el-input type="password" v-model="findPWDRuleForm.doublenewpassword" placeholder="请再次确认新密码" :disabled="find" clearable></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" :disabled="find" @click="commitNewPWD(findPWDRuleForm)">确认更改</el-button>
+                        <el-button type="primary" :disabled="find" @click="commitNewPWD('findPWDRuleForm')">确认更改</el-button>
                         <el-button @click="resetPWDform(findPWDRuleForm)">重置</el-button>
                     </el-form-item>
                 </el-form>
@@ -54,7 +54,7 @@ export default {
     var validatorPass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
-      } else if (value !== this.registerRuleForm.newpassword) {
+      } else if (value !== this.findPWDRuleForm.newpassword) {
         callback(new Error('两次输入密码不一致'))
       } else {
         callback()
@@ -85,7 +85,6 @@ export default {
           {validator: validatorPass2, trigger: 'blur'}
         ],
         question: [
-          {required: true, message: '请选择相关问题', trigger: 'change'}
         ],
         answer: [
           {required: true, message: '请回答问题', trigger: 'blur'},
@@ -144,7 +143,17 @@ export default {
           })
             .then((res) => {
               var json = res.data
-              console.log(json)
+              if (json.code !== '0') {
+                return Promise.reject(json.msg)
+              } else {
+                this.$message({
+                  message: `恭喜，${json.msg}`,
+                  type: 'success'
+                })
+                setTimeout(function () {
+                  location.href = '/'
+                }, 2000)
+              }
             })
             .catch((err) => {
               this.$message({

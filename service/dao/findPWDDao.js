@@ -79,12 +79,13 @@ module.exports = {
       result = {
         code: '1',
         data: {},
-        msg: '密保问题错误'
+        msg: '密保问题错误，请刷新重试！'
       }
       jsonWrite(res, result)
       return
     }
     $params.username = $params.username
+    // console.log($params.newpassword)
     $params.newpassword = bcryptFun.bcryptInfo($params.newpassword)
     pool.getConnection(function (err, connection) {
       if (err) {
@@ -110,15 +111,15 @@ module.exports = {
           connection.release()
           throw new Error('找回密码插入新密码出错')
         } else {
-          var toJSON = sqlformatJSON.transforms(result)
-          console.log(toJSON)
-          // result = {
-          //   code: '0',
-          //   data: {},
-          //   msg: '密码修改成功'
-          // }
-          // jsonWrite(res, result)
-          // connection.release()
+          // var toJSON = sqlformatJSON.transforms(result)
+          // console.log(toJSON)
+          result = {
+            code: '0',
+            data: {},
+            msg: '密码修改成功,将自动跳转首页！'
+          }
+          jsonWrite(res, result)
+          connection.release()
         }
       })
     })
