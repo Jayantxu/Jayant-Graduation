@@ -6,6 +6,8 @@ var $sql = require('../db/sqlMap')
 var bcryptFun = require('../public/crypto')
 // 使用连接池,提升性能
 var pool = mysql.createPool($conn.mysql)
+// 引入mysql转JSON
+var sqlformatJSON = require('../public/sqlformatJSON')
 var jsonWrite = function (res, ret) {
   if (typeof ret === 'undefined') {
     res.json({
@@ -16,7 +18,7 @@ var jsonWrite = function (res, ret) {
     res.json(ret)
   }
 }
-// 用户数据库答案
+// 用户数据库答案--findQuestion中寻找
 var DBanswer
 module.exports = {
   // 查找用户密保问题
@@ -69,18 +71,10 @@ module.exports = {
   },
   changePWD: function (req, res, next) {
     var $params = req.body.params
+    var result
     // 打印一下前端的数据
     // console.log($params)
     // 对密码加密
-    if ($params.newpassword === '' || $params.newpassword !== $params.doublenewpassword) {
-      var result = {
-        code: '1',
-        data: {},
-        msg: '密码不一致,请修改'
-      }
-      jsonWrite(res, result)
-      return
-    }
     if ($params.answer === '' || $params.answer !== DBanswer) {
       result = {
         code: '1',
@@ -94,16 +88,37 @@ module.exports = {
     $params.newpassword = bcryptFun.bcryptInfo($params.newpassword)
     pool.getConnection(function (err, connection) {
       if (err) {
+        result = {
+          code: '1',
+          data: '',
+          msg: '服务器出错'
+        }
+        // 如果出错,关闭连接并返回错误
+        jsonWrite(res, result)
+        connection.release()
         throw new Error('找回密码用户连接池出错')
       }
       connection.query($sql.findPWD.changPWD, [$params.newpassword, $params.username], function (err, result) {
         if (err) {
+          result = {
+            code: '1',
+            data: '',
+            msg: '密码修改出错，请稍后再试'
+          }
+          // 如果出错,关闭连接并返回错误
+          jsonWrite(res, result)
+          connection.release()
           throw new Error('找回密码插入新密码出错')
-        }
-        result = {
-          code: '0',
-          data: {},
-          msg: '密码修改成功'
+        } else {
+          var toJSON = sqlformatJSON.transforms(result)
+          console.log(toJSON)
+          // result = {
+          //   code: '0',
+          //   data: {},
+          //   msg: '密码修改成功'
+          // }
+          // jsonWrite(res, result)
+          // connection.release()
         }
       })
     })

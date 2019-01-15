@@ -5,4 +5,7 @@ var findPWDDao = require('../dao/findPWDDao')
 router.get('/findQuestion', function (req, res, next) {
   findPWDDao.findQuestion(req, res, next)
 })
+router.post('/changePWD', function (req, res, next) {
+  findPWDDao.changePWD(req, res, next)
+})
 module.exports = router

@@ -133,6 +133,29 @@ export default {
     commitNewPWD (findPWDRuleForm) {
       // 验证表单正确性,以上面的验证逻辑验证
       this.$refs[findPWDRuleForm].validate((valid) => {
+        if (valid) {
+          this.$http.post('/api/findPWD/changePWD', {
+            params: {
+              username: this.findPWDRuleForm.username,
+              newpassword: this.findPWDRuleForm.newpassword,
+              question: this.findPWDRuleForm.question,
+              answer: this.findPWDRuleForm.answer
+            }
+          })
+            .then((res) => {
+              var json = res.data
+              console.log(json)
+            })
+            .catch((err) => {
+              this.$message({
+                message: `修改密码错误，${err}`,
+                type: 'warning'
+              })
+            })
+        } else {
+          this.$message.error('表单错误')
+          return false
+        }
       })
     },
     resetPWDform (findPWDRuleForm) {
