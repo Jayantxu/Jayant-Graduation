@@ -42,10 +42,10 @@
                 <!-- 登录/注册 -->
                 <el-col :xs="7" :sm="4" :md="3" :lg="3" :xl="4">
                     <div class="col-content font16 mt15">
-                        <i @click='LoginDialogVisible = true' class="icon iconfont icon-denglu iconfont25 icon-HC">
+                        <i @click='LoginDialogVisible = true' class="icon iconfont icon-denglu iconfont25 hover-click">
                         </i>
                         /
-                        <i @click='returnRegister()' class="icon iconfont icon-zhuce iconfont25 icon-HC">
+                        <i @click='returnRegister()' class="icon iconfont icon-zhuce iconfont25 hover-click">
                         </i>
                     </div>
                 </el-col>
@@ -61,7 +61,7 @@
                     <el-input ></el-input>
                 </el-form-item>
             </el-form>
-            <span class="text-right inline-block vw100 ">忘记密码？</span>
+            <span @click='returnfindPWD()' class="text-right inline-block vw100 hover-click">忘记密码？</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="LoginDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="LoginDialogVisible = false">确 定</el-button>
@@ -80,6 +80,9 @@ export default {
   methods: {
     returnRegister: function () {
       location.href = './register'
+    },
+    returnfindPWD: function () {
+      location.href = './findPWD'
     }
   }
 }
@@ -105,7 +108,7 @@ export default {
         height: 0.45rem;
         border-radius: 1rem;
     }
-    .icon-HC {
+    .hover-click {
         cursor: pointer;
         &:hover {
             text-decoration: underline;
