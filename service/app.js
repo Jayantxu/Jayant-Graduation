@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
-const registeruser = require('./routes/registerUser')
-const findpwd = require('./routes/findPWD')
+const userPlay = require('./routes/userPlay')
 const bodyParser = require('body-parser')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded())
@@ -19,8 +18,6 @@ app.all('*', function (req, res, next) {
 app.listen(3000, () => {
   console.log('app listening on port 3000.')
 })
-/* 以下路由 */
-// 注册用户
-app.use('/api/user', registeruser)
-// 找回密码
-app.use('/api/findPWD', findpwd)
+/* 以下路由,大模块的路由 */
+// 用户相关性
+app.use('/api/user', userPlay)

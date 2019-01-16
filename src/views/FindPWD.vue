@@ -98,7 +98,7 @@ export default {
       this.$refs[findPWDRuleForm].validateField('username', (valid) => {
         if (!valid) {
           // 正确情况--向后台拿问题
-          this.$http.get('/api/findPWD/findQuestion', {
+          this.$http.get('/api/user/findQuestion', {
             params: {
               username: this.findPWDRuleForm.username
             }
@@ -133,7 +133,7 @@ export default {
       // 验证表单正确性,以上面的验证逻辑验证
       this.$refs[findPWDRuleForm].validate((valid) => {
         if (valid) {
-          this.$http.post('/api/findPWD/changePWD', {
+          this.$http.post('/api/user/changePWD', {
             params: {
               username: this.findPWDRuleForm.username,
               newpassword: this.findPWDRuleForm.newpassword,
