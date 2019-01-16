@@ -30,7 +30,7 @@ module.exports = {
       if (err) {
         throw new Error('用户登录数据库连接出错')
       }
-      connection.query($sql.login.checkLogin, $params.username, (err, result) => {
+      connection.query($sql.login.loginIn, $params.username, (err, result) => {
         if (err) {
           result = {
             code: '1',

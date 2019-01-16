@@ -12,7 +12,7 @@ var sqlMap = {
   },
   // 登录sql语句
   login: {
-    checkLogin: 'select password from userinfo where username = ?'
+    loginIn: 'select password from userinfo where username = ?'
   }
 }
 module.exports = sqlMap

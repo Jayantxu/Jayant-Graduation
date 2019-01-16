@@ -17,7 +17,7 @@ var token = {
       }
     } else {
       const token = jwt.sign(payload, secret, {
-        expiresIn: '2h'
+        expiresIn: '1h'
       })
       obj = {
         bool: true,
