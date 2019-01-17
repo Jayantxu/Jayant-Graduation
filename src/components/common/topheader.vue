@@ -52,19 +52,19 @@
             </el-row>
         </div>
         <!-- 登录框 -->
-        <el-dialog title='用户登录' class="text-left normal-font-size" :visible.sync="LoginDialogVisible" width="30%" >
+        <el-dialog title='用户登录' class="text-left normal-font-size" :model='loginUserForm' :ref='loginUserForm' :rules='rules' :visible.sync="LoginDialogVisible" width="30%" >
             <el-form label-width="20%">
                 <el-form-item label="账户" >
-                    <el-input ></el-input>
+                    <el-input v-model='loginUserForm.username' clearable></el-input>
                 </el-form-item>
                 <el-form-item label="密码 " >
-                    <el-input ></el-input>
+                    <el-input v-model='loginUserForm.password' clearable></el-input>
                 </el-form-item>
             </el-form>
             <span @click='returnfindPWD()' class="text-right inline-block vw100 hover-click">忘记密码？</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="LoginDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="LoginDialogVisible = false">确 定</el-button>
+                <el-button type="primary" @click='commitLogin("loginUserForm")'>确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -74,7 +74,21 @@ export default {
   name: 'topheader',
   data () {
     return {
-      LoginDialogVisible: false
+      LoginDialogVisible: false,
+      loginUserForm: {
+        username: '',
+        password: ''
+      },
+      rules: {
+        username: [
+          {required: true, message: '请输入用户名', trigger: 'blur'},
+          {min: 3, max: 10, message: '长度在3-10个字符', trigger: 'blur'}
+        ],
+        password: [
+          {required: true, message: '请输入密码', trigger: 'blur'},
+          {min: 5, max: 15, message: '密码长度在5-15个字符', trigger: 'blur'}
+        ]
+      }
     }
   },
   methods: {
@@ -83,6 +97,35 @@ export default {
     },
     returnfindPWD: function () {
       location.href = './findPWD'
+    },
+    commitLogin: function (loginUserForm) {
+      this.$refs[loginUserForm].validate((valid) => {
+        if (valid) {
+          this.$http.post('/api/user/loginIn', {
+            params: {
+              username: this.loginUserForm.username,
+              password: this.loginUserForm.password
+            }
+          }).then((res) => {
+            let json = res.data
+            if (json.code !== '0') {
+              return Promise.reject(json.msg)
+            } else {
+              // 修改登录态保存至store中
+              this.$store.commit('LoginIn')
+              console.log(json)
+            }
+          }).catch((err) => {
+            this.$message({
+              message: `${err}`,
+              type: 'warning'
+            })
+          })
+        } else {
+          this.$message.error('用户名密码不正确')
+          return false
+        }
+      })
     }
   }
 }

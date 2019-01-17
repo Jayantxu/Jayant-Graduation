@@ -9,7 +9,8 @@ const store = () => new Vuex.Store({
       'Q001': '你最喜欢的歌手?',
       'Q002': '你的工作？',
       'Q003': '你最喜欢的书籍？'
-    }
+    },
+    isLogin: false
   },
   getters: {
     doneTodos: state => {
@@ -22,8 +23,12 @@ const store = () => new Vuex.Store({
     */
   },
   mutations: {
-    increment (state) {
-      state.counter++
+    // 用户登录登出,有个小标识,存在Store中,用于页面其他小元素的展示
+    loginIn (state) {
+      state.isLogin = !state.isLogin
+    },
+    loginOut (state) {
+      state.isLogin = !state.isLogin
     }
     // decrement (state, payload) {
     //   state.counter -= payload.amount
