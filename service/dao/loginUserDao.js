@@ -26,7 +26,7 @@ module.exports = {
     var $params = req.body.params
     // 先对密码加密,在进行对比
     $params.password = bcryptFun.bcryptInfo($params.password)
-    pool.getConnection(err, connection) {
+    pool.getConnection(function (err, connection) {
       if (err) {
         throw new Error('用户登录数据库连接出错')
       }
@@ -45,6 +45,6 @@ module.exports = {
           
         }
       })
-    }
+    })
   }
 }
