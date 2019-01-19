@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded())
 //  设置允许跨域访问该服务.
 app.all('*', function (req, res, next) {
   // 注意下方的 * 是可影响返回数据的同源问题-*-*-*-*-在.vue中发送cookie时,需要更改下方Allow-Origin为具体的域名
-  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Origin', 'http://localhost:8001')
   //  Access-Control-Allow-Headers ,可根据浏览器的F12查看,把对应的粘贴在这里就行
   res.header('Access-Control-Allow-Headers', 'Content-Type')
   res.header('Access-Control-Allow-Credentials', 'true')

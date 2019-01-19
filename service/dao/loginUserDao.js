@@ -41,8 +41,8 @@ module.exports = {
           throw new Error('用户登录查询语句出错')
         } else {
           // 将寻找到的密码与加密后进行匹配,并在此处处理token问题
-          var findPWD = sqlformatJSON.transforms(result)
-          
+          console.log(result)
+          console.log('登录成功')
         }
       })
     })

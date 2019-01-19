@@ -25,19 +25,21 @@ axios.interceptors.request.use((config) => {
   return Promise.resolve(res)
 })
 // 统一对响应进行拦截器处理*-*-*主要处理状态不通问题
-axios.interceptors.response.use((response) => {
+axios.interceptors.response.use(function (response) {
   return response
-}, (err) => {
-  let res = {}
-  // 或者可以额外跳转错误页面
+}, function (err) {
+  var res = {}
+  // 识别不同状态码，并返回数据
   if (err.response.status === 404) {
     res = {
-      err: err,
       data: {
         code: '1',
-        msg: ` 404, Not Found`
+        msg: '404, 服务器出错'
       }
     }
   }
+  console.log(err)
   return Promise.resolve(res)
-})
+}
+)
+export default axios
