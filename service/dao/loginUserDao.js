@@ -41,8 +41,24 @@ module.exports = {
           throw new Error('用户登录查询语句出错')
         } else {
           // 将寻找到的密码与加密后进行匹配,并在此处处理token问题
-          console.log(result)
-          console.log('登录成功')
+          result = sqlformatJSON.transforms(result)
+          var SQLpassword = result[0].password
+          // console.log(result[0].password)
+          if($params.password !== SQLpassword) {
+            result = {
+              code: '1',
+              data: {},
+              msg: '密码不正确'
+            }
+          } else {
+            result = {
+              code: '0',
+              data: {},
+              msg: '登录成功'
+            }
+          }
+          jsonWrite(res, result)
+          connection.release()
         }
       })
     })

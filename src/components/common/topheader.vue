@@ -52,13 +52,13 @@
             </el-row>
         </div>
         <!-- 登录框 -->
-        <el-dialog title='用户登录' class="text-left normal-font-size" :model='loginUserForm' :ref='loginUserForm' :rules='rules' :visible.sync="LoginDialogVisible" width="30%" >
-            <el-form label-width="20%">
+        <el-dialog title='用户登录' class="text-left normal-font-size"  :visible.sync="LoginDialogVisible" width="30%" >
+            <el-form label-width="20%" :model="loginUserForm" :rules='rules' ref="loginUserForm" >
                 <el-form-item label="账户" >
                     <el-input v-model='loginUserForm.username' clearable></el-input>
                 </el-form-item>
                 <el-form-item label="密码 " >
-                    <el-input v-model='loginUserForm.password' clearable></el-input>
+                    <el-input v-model='loginUserForm.password' type='password' clearable></el-input>
                 </el-form-item>
             </el-form>
             <span @click='returnfindPWD()' class="text-right inline-block vw100 hover-click">忘记密码？</span>
@@ -98,7 +98,7 @@ export default {
     returnfindPWD: function () {
       location.href = './findPWD'
     },
-    commitLogin: function (loginUserForm) {
+    commitLogin (loginUserForm) {
       this.$refs[loginUserForm].validate((valid) => {
         if (valid) {
           this.$http.post('/api/user/loginIn', {
@@ -111,9 +111,13 @@ export default {
             if (json.code !== '0') {
               return Promise.reject(json.msg)
             } else {
+              this.$message({
+                message: `${json.msg}`,
+                type: 'success'
+              })
               // 修改登录态保存至store中
-              this.$store.commit('LoginIn')
-              console.log(json)
+            //   this.$store.commit('LoginIn')
+            //   console.log(json)
             }
           }).catch((err) => {
             this.$message({
