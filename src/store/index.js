@@ -24,10 +24,10 @@ const store = () => new Vuex.Store({
   },
   mutations: {
     // 用户登录登出,有个小标识,存在Store中,用于页面其他小元素的展示
-    loginIn (state) {
+    LoginIn (state) {
       state.isLogin = !state.isLogin
     },
-    loginOut (state) {
+    LoginOut (state) {
       state.isLogin = !state.isLogin
     }
     // decrement (state, payload) {

@@ -28,7 +28,7 @@
                 <!-- 首页icon -->
                 <el-col :xs="2" :sm="2" :md="1" :lg="1" :xl="4">
                     <div class="col-content font22 mt10">
-                        <i class="icon iconfont icon-home_icon iconfont32">
+                        <i @click='returnHome()' class="icon iconfont icon-home_icon iconfont32 hover-click">
                         </i>
                     </div>
                 </el-col>
@@ -50,6 +50,7 @@
                     </div>
                 </el-col>
             </el-row>
+            {{isLogin}}
         </div>
         <!-- 登录框 -->
         <el-dialog title='用户登录' class="text-left normal-font-size"  :visible.sync="LoginDialogVisible" width="30%" >
@@ -74,6 +75,7 @@ export default {
   name: 'topheader',
   data () {
     return {
+      isLogin: false,
       LoginDialogVisible: false,
       loginUserForm: {
         username: '',
@@ -91,12 +93,20 @@ export default {
       }
     }
   },
+  computed: {
+    // checkLogin () {
+    //   return this.$store.state.isLogin
+    // }
+  },
   methods: {
     returnRegister: function () {
       location.href = './register'
     },
     returnfindPWD: function () {
       location.href = './findPWD'
+    },
+    returnHome: function () {
+      location.href = '/'
     },
     commitLogin (loginUserForm) {
       this.$refs[loginUserForm].validate((valid) => {
@@ -116,7 +126,8 @@ export default {
                 type: 'success'
               })
               // 修改登录态保存至store中
-            //   this.$store.commit('LoginIn')
+              this.$store.commit('LoginIn')
+              this.isLogin = this.$store.state.isLogin
             //   console.log(json)
             }
           }).catch((err) => {

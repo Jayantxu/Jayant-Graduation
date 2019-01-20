@@ -44,18 +44,28 @@ module.exports = {
           result = sqlformatJSON.transforms(result)
           var SQLpassword = result[0].password
           // console.log(result[0].password)
-          if($params.password !== SQLpassword) {
+          if ($params.password !== SQLpassword) {
             result = {
               code: '1',
               data: {},
               msg: '密码不正确'
             }
           } else {
+            // 生成token
+            var Ctoken = tokenFun.createToken($params.username)
+            // console.log(Ctoken.token)
             result = {
               code: '0',
-              data: {},
+              data: {
+                Ctoken: Ctoken.token
+              },
               msg: '登录成功'
             }
+            // 设置cookie
+            res.cookie('token', Ctoken.token, {
+              expiress: 0,
+              httpOnly: true
+            })
           }
           jsonWrite(res, result)
           connection.release()
