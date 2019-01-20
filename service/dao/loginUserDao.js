@@ -73,5 +73,15 @@ module.exports = {
         }
       })
     })
+  },
+  loginOut: function (req, res, next) {
+    res.clearCookie('token')
+    var result = {
+      code: '0',
+      data: {
+      },
+      msg: '登出成功'
+    }
+    jsonWrite(res, result)
   }
 }

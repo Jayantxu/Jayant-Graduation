@@ -36,8 +36,16 @@
                 <el-col v-show="isLogin" :xs="0" :sm="2" :md="1" :lg="3" :xl="4">
                     <div class="col-content font22 mt10">
                         <p class="font16 inline-block">用户{{DLusername}}</p>
-                        <i class="icon iconfont icon-tubiaozhizuomobanyihuifu- iconfont32 ">
-                        </i>
+                        <el-dropdown @command='UserPersonClick'>
+                          <i class="icon iconfont icon-tubiaozhizuomobanyihuifu- iconfont32 hover-click">
+                            <span class="el-dropdown-link">
+                            </span>
+                          </i>
+                          <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item command='PersonHome'>个人主页</el-dropdown-item>
+                            <el-dropdown-item command='LoginOut'>退出登录</el-dropdown-item>
+                          </el-dropdown-menu>
+                        </el-dropdown>
                     </div>
                 </el-col>
                 <!-- 登录/注册 -->
@@ -116,6 +124,15 @@ export default {
     returnHome: function () {
       location.href = '/'
     },
+    // 识别用户对el-dropdown的时间 @command='UserPersonClick'
+    UserPersonClick (command) {
+      if (command === 'PersonHome') {
+        console.log('个人主页')
+      }
+      if (command === 'LoginOut') {
+        this.LoginOut()
+      }
+    },
     commitLogin (loginUserForm) {
       this.$refs[loginUserForm].validate((valid) => {
         if (valid) {
@@ -154,6 +171,49 @@ export default {
           this.$message.error('用户名密码不正确')
           return false
         }
+      })
+    },
+    LoginOut () {
+      this.$confirm('您将退出登录?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 此处逻辑,请求删除了cookie之后,前端更改store中的状态
+        this.$http.post('/api/user/loginOut', {
+          params: {
+            username: this.DLusername
+          }
+        })
+          .then((res) => {
+            var json = res.data
+            console.log(json)
+            if (json.code !== '0') {
+              this.$message({
+                type: 'info',
+                message: '未知错误'
+              })
+            } else {
+              // 改变store状态
+              this.$store.commit('LoginIn', {
+                username: json.data.username
+              })
+              this.checkLogin()
+              // 提示信息
+              this.$message({
+                type: 'success',
+                message: '登出成功'
+              })
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消登出'
+        })
       })
     }
   },

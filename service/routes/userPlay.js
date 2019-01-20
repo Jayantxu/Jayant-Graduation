@@ -7,7 +7,7 @@ var router = express.Router()
 var registerDao = require('../dao/registerDao')
 // 修改密码Dao
 var findPWDDao = require('../dao/findPWDDao')
-// 用户登录Dao
+// 用户登录\登出Dao
 var loginUserDao = require('../dao/loginUserDao')
 // 注册用户
 router.post('/registeruser', function (req, res, next) {
