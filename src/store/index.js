@@ -1,16 +1,20 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+// 引入持久化vuex的插件
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
 const store = () => new Vuex.Store({
+  plugins: [createPersistedState()],
   state: {
     question: {
       'Q001': '你最喜欢的歌手?',
       'Q002': '你的工作？',
       'Q003': '你最喜欢的书籍？'
     },
-    isLogin: false
+    isLogin: false,
+    DLusername: ''
   },
   getters: {
     doneTodos: state => {
@@ -24,8 +28,9 @@ const store = () => new Vuex.Store({
   },
   mutations: {
     // 用户登录登出,有个小标识,存在Store中,用于页面其他小元素的展示
-    LoginIn (state) {
+    LoginIn (state, payload) {
       state.isLogin = !state.isLogin
+      state.DLusername = payload.username
     },
     LoginOut (state) {
       state.isLogin = !state.isLogin

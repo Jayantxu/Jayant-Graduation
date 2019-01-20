@@ -26,21 +26,22 @@
                     </div>
                 </el-col>
                 <!-- 首页icon -->
-                <el-col :xs="2" :sm="2" :md="1" :lg="1" :xl="4">
+                <el-col :xs="2" :sm="2" :md="1" :lg="2" :xl="4">
                     <div class="col-content font22 mt10">
                         <i @click='returnHome()' class="icon iconfont icon-home_icon iconfont32 hover-click">
                         </i>
                     </div>
                 </el-col>
                 <!-- 用户icon -->
-                <el-col :xs="0" :sm="2" :md="1" :lg="1" :xl="4">
+                <el-col v-show="isLogin" :xs="0" :sm="2" :md="1" :lg="3" :xl="4">
                     <div class="col-content font22 mt10">
+                        <p class="font16 inline-block">用户{{DLusername}}</p>
                         <i class="icon iconfont icon-tubiaozhizuomobanyihuifu- iconfont32 ">
                         </i>
                     </div>
                 </el-col>
                 <!-- 登录/注册 -->
-                <el-col :xs="7" :sm="4" :md="3" :lg="3" :xl="4">
+                <el-col v-show="!isLogin" :xs="7" :sm="4" :md="3" :lg="3" :xl="4">
                     <div class="col-content font16 mt15">
                         <i @click='LoginDialogVisible = true' class="icon iconfont icon-denglu iconfont25 hover-click">
                         </i>
@@ -76,6 +77,9 @@ export default {
   data () {
     return {
       isLogin: false,
+      // 记录登录的用户名
+      DLusername: '',
+      // 记录登录对话框的展示与否
       LoginDialogVisible: false,
       loginUserForm: {
         username: '',
@@ -99,6 +103,10 @@ export default {
     // }
   },
   methods: {
+    checkLogin: function () {
+      this.isLogin = this.$store.state.isLogin
+      this.DLusername = this.$store.state.DLusername
+    },
     returnRegister: function () {
       location.href = './register'
     },
@@ -126,9 +134,15 @@ export default {
                 type: 'success'
               })
               // 修改登录态保存至store中
-              this.$store.commit('LoginIn')
-              this.isLogin = this.$store.state.isLogin
-            //   console.log(json)
+              this.$store.commit('LoginIn', {
+                username: json.data.username
+              })
+              // 记录该用户名
+              this.DLusername = json.data.username
+              // 隐藏登录对话框
+              this.LoginDialogVisible = !this.LoginDialogVisible
+              // 调用获取某些state
+              this.checkLogin()
             }
           }).catch((err) => {
             this.$message({
@@ -142,6 +156,10 @@ export default {
         }
       })
     }
+  },
+  mounted () {
+    // 执行一遍该函数,目的是前往store中获取登录态
+    this.checkLogin()
   }
 }
 </script>

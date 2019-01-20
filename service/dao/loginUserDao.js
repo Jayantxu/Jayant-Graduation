@@ -57,6 +57,7 @@ module.exports = {
             result = {
               code: '0',
               data: {
+                username: $params.username,
                 Ctoken: Ctoken.token
               },
               msg: '登录成功'
