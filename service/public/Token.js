@@ -1,30 +1,53 @@
-/*
-@ author JayantXu
-  JWT结构：
-  Header:{
-      type:'jwt'    //声明类型
-      alg:'SHA256'  //加密的算法
-  }
-  Payload:{
-      iss:'JayantXu'    //签发者
-      exp:''        //过期时间
-      iat:''        //签发的时间，create的时间
-  }
-  signature:{   //base64后的header+payload;+secret(密钥)
-  }
-Session相关Token方法
-*/
-var crypto = require('crypto')
+// 引入jsonwebtoken
+var jwt = require('jsonwebtoken')
+const secret = 'JayantXuAdmin' // 密钥
 var token = {
-  createToken: function (obj, timeout) {
+  createToken: function (username) {
+    var obj = {}
+    var payload = {
+      iss: 'JayantXu',
+      uName: username,
+      baseT: '0'
+    }
+    if (username === '') {
+      obj = {
+        bool: false,
+        msg: '用户名生成Token错误',
+        token: ''
+      }
+    } else {
+      const token = jwt.sign(payload, secret, {
+        // expiresIn: '1h'
+      })
+      obj = {
+        bool: true,
+        msg: '成功',
+        token: token
+      }
+    }
+    return obj
+    // console.log(token)
   },
-  // 解密Token
-  decodeToken: function () {
-  },
-  // 检验Token
-  checkToken: function () {
-    var dectoken = this.decodeToken()
+  decodeToken: function (token) {
+    var obj = {}
+    jwt.verify(token, secret, function (err, decoded) {
+      if (err) {
+        if (err.message === 'jwt expired') {
+          obj = {
+            bool: false,
+            msg: '会话超时,请重新登录',
+            token: ''
+          }
+        }
+      } else {
+        obj = {
+          bool: true,
+          msg: '成功',
+          token: decoded
+        }
+      }
+      return obj
+    })
   }
-
 }
 module.exports = token

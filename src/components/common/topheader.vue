@@ -26,21 +26,22 @@
                     </div>
                 </el-col>
                 <!-- 首页icon -->
-                <el-col :xs="2" :sm="2" :md="1" :lg="1" :xl="4">
+                <el-col :xs="2" :sm="2" :md="1" :lg="2" :xl="4">
                     <div class="col-content font22 mt10">
-                        <i class="icon iconfont icon-home_icon iconfont32">
+                        <i @click='returnHome()' class="icon iconfont icon-home_icon iconfont32 hover-click">
                         </i>
                     </div>
                 </el-col>
                 <!-- 用户icon -->
-                <el-col :xs="0" :sm="2" :md="1" :lg="1" :xl="4">
+                <el-col v-show="isLogin" :xs="0" :sm="2" :md="1" :lg="3" :xl="4">
                     <div class="col-content font22 mt10">
+                        <p class="font16 inline-block">用户{{DLusername}}</p>
                         <i class="icon iconfont icon-tubiaozhizuomobanyihuifu- iconfont32 ">
                         </i>
                     </div>
                 </el-col>
                 <!-- 登录/注册 -->
-                <el-col :xs="7" :sm="4" :md="3" :lg="3" :xl="4">
+                <el-col v-show="!isLogin" :xs="7" :sm="4" :md="3" :lg="3" :xl="4">
                     <div class="col-content font16 mt15">
                         <i @click='LoginDialogVisible = true' class="icon iconfont icon-denglu iconfont25 hover-click">
                         </i>
@@ -50,21 +51,22 @@
                     </div>
                 </el-col>
             </el-row>
+            {{isLogin}}
         </div>
         <!-- 登录框 -->
-        <el-dialog title='用户登录' class="text-left normal-font-size" :visible.sync="LoginDialogVisible" width="30%" >
-            <el-form label-width="20%">
+        <el-dialog title='用户登录' class="text-left normal-font-size"  :visible.sync="LoginDialogVisible" width="30%" >
+            <el-form label-width="20%" :model="loginUserForm" :rules='rules' ref="loginUserForm" >
                 <el-form-item label="账户" >
-                    <el-input ></el-input>
+                    <el-input v-model='loginUserForm.username' clearable></el-input>
                 </el-form-item>
                 <el-form-item label="密码 " >
-                    <el-input ></el-input>
+                    <el-input v-model='loginUserForm.password' type='password' clearable></el-input>
                 </el-form-item>
             </el-form>
             <span @click='returnfindPWD()' class="text-right inline-block vw100 hover-click">忘记密码？</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="LoginDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="LoginDialogVisible = false">确 定</el-button>
+                <el-button type="primary" @click='commitLogin("loginUserForm")'>确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -74,16 +76,90 @@ export default {
   name: 'topheader',
   data () {
     return {
-      LoginDialogVisible: false
+      isLogin: false,
+      // 记录登录的用户名
+      DLusername: '',
+      // 记录登录对话框的展示与否
+      LoginDialogVisible: false,
+      loginUserForm: {
+        username: '',
+        password: ''
+      },
+      rules: {
+        username: [
+          {required: true, message: '请输入用户名', trigger: 'blur'},
+          {min: 3, max: 10, message: '长度在3-10个字符', trigger: 'blur'}
+        ],
+        password: [
+          {required: true, message: '请输入密码', trigger: 'blur'},
+          {min: 5, max: 15, message: '密码长度在5-15个字符', trigger: 'blur'}
+        ]
+      }
     }
   },
+  computed: {
+    // checkLogin () {
+    //   return this.$store.state.isLogin
+    // }
+  },
   methods: {
+    checkLogin: function () {
+      this.isLogin = this.$store.state.isLogin
+      this.DLusername = this.$store.state.DLusername
+    },
     returnRegister: function () {
       location.href = './register'
     },
     returnfindPWD: function () {
       location.href = './findPWD'
+    },
+    returnHome: function () {
+      location.href = '/'
+    },
+    commitLogin (loginUserForm) {
+      this.$refs[loginUserForm].validate((valid) => {
+        if (valid) {
+          this.$http.post('/api/user/loginIn', {
+            params: {
+              username: this.loginUserForm.username,
+              password: this.loginUserForm.password
+            }
+          }).then((res) => {
+            let json = res.data
+            if (json.code !== '0') {
+              return Promise.reject(json.msg)
+            } else {
+              this.$message({
+                message: `${json.msg}`,
+                type: 'success'
+              })
+              // 修改登录态保存至store中
+              this.$store.commit('LoginIn', {
+                username: json.data.username
+              })
+              // 记录该用户名
+              this.DLusername = json.data.username
+              // 隐藏登录对话框
+              this.LoginDialogVisible = !this.LoginDialogVisible
+              // 调用获取某些state
+              this.checkLogin()
+            }
+          }).catch((err) => {
+            this.$message({
+              message: `${err}`,
+              type: 'warning'
+            })
+          })
+        } else {
+          this.$message.error('用户名密码不正确')
+          return false
+        }
+      })
     }
+  },
+  mounted () {
+    // 执行一遍该函数,目的是前往store中获取登录态
+    this.checkLogin()
   }
 }
 </script>

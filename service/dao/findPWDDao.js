@@ -54,8 +54,7 @@ module.exports = {
         }
         // console.log(JSON.stringify(result))
         // 将查询出来的结果转为数组，然后再取JSON
-        var toString = JSON.stringify(result)
-        var toJSON = JSON.parse(toString)
+        var toJSON = sqlformatJSON.transforms(result)
         // 记录下来答案
         DBanswer = toJSON[0].answer
         // console.log(toJSON[0].question)
