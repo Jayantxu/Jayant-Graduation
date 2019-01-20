@@ -17,9 +17,9 @@ const store = () => new Vuex.Store({
     DLusername: ''
   },
   getters: {
-    doneTodos: state => {
-      return state.todos.filter(todo => todo.done)
-    }
+    // doneTodos: state => {
+    //   return state.todos.filter(todo => todo.done)
+    // }
     /* 以下是以方法的方式返回计算getters
     doneTodo: state => (id) => {
         return state.todos.find(todo => todo.id === id)
