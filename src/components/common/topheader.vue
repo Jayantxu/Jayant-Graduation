@@ -215,11 +215,23 @@ export default {
           message: '取消登出'
         })
       })
+    },
+    beforeunloadHandler (e) {
+      // 改变store状态
+      this.$store.commit('LoginIn', {
+        username: ''
+      })
+      this.checkLogin()
     }
   },
   mounted () {
     // 执行一遍该函数,目的是前往store中获取登录态
     this.checkLogin()
+    // 监听浏览器关闭,改变store,因为浏览器关闭cookie会自动消失
+    window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
+  },
+  destroyed () {
+    window.removeEventListener('beforeunload', e => this.beforeunloadHandler(e))
   }
 }
 </script>
