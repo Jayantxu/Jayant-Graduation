@@ -28,6 +28,8 @@
                 <!-- 首页icon -->
                 <el-col :xs="2" :sm="2" :md="1" :lg="2" :xl="4">
                     <div class="col-content font22 mt10">
+                        <i @click='returnWrite()' v-show="isLogin" class="mr20 icon iconfont icon-shuxie iconfont32 hover-click">
+                        </i>
                         <i @click='returnHome()' class="icon iconfont icon-home_icon iconfont32 hover-click">
                         </i>
                     </div>
@@ -59,7 +61,6 @@
                     </div>
                 </el-col>
             </el-row>
-            {{isLogin}}
         </div>
         <!-- 登录框 -->
         <el-dialog title='用户登录' class="text-left normal-font-size"  :visible.sync="LoginDialogVisible" width="30%" >
@@ -123,6 +124,9 @@ export default {
     },
     returnHome: function () {
       location.href = '/'
+    },
+    returnWrite: function () {
+      location.href = '/writeNewComment'
     },
     // 识别用户对el-dropdown的时间 @command='UserPersonClick'
     UserPersonClick (command) {
@@ -216,22 +220,10 @@ export default {
         })
       })
     },
-    beforeunloadHandler (e) {
-      // 改变store状态
-      this.$store.commit('LoginIn', {
-        username: ''
-      })
-      this.checkLogin()
-    }
   },
   mounted () {
     // 执行一遍该函数,目的是前往store中获取登录态
     this.checkLogin()
-    // 监听浏览器关闭,改变store,因为浏览器关闭cookie会自动消失
-    window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
-  },
-  destroyed () {
-    window.removeEventListener('beforeunload', e => this.beforeunloadHandler(e))
   }
 }
 </script>
