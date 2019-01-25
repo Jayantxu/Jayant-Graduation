@@ -255,4 +255,7 @@ export default {
             color: rgb(149, 153, 152);
         }
     }
+    .el-message-box__wrapper {
+      z-index: 10000 !important
+    }
 </style>

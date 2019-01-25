@@ -72,7 +72,8 @@ export default {
       this.$http.post('/api/article/commitNewArticle', {
         params: {
           articleTitle: this.ruleEditor.commentTitle,
-          articleContent: this.editorContenthtml
+          articleContent: this.editorContenthtml,
+          username: this.$store.state.DLusername
         }
       })
         .then((res) => {
