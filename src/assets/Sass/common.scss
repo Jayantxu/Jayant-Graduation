@@ -153,3 +153,16 @@ html {
 .inline-block {
     display: inline-block;
 }
+.btn-l20 .el-button+.el-button {
+    margin-left: 20px !important;
+}
+/*层级*/
+.editor-dialog3 {
+    z-index: 10003 !important
+}
+.editor-dialog2 {
+    z-index: 10002 !important
+}
+.editor-dialog1 {
+    z-index: 10001 !important
+}

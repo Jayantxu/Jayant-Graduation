@@ -30,6 +30,15 @@ axios.interceptors.response.use(function (response) {
 }, function (err) {
   var res = {}
   // 识别不同状态码，并返回数据
+  if (!err.response) {
+    res = {
+      data: {
+        code: '1',
+        msg: '网络错误，请稍后再试'
+      }
+    }
+    return Promise.resolve(res)
+  }
   if (err.response.status === 404) {
     res = {
       data: {
@@ -37,9 +46,8 @@ axios.interceptors.response.use(function (response) {
         msg: '404, 服务器出错'
       }
     }
+    return Promise.resolve(res)
   }
-  console.log(err)
-  return Promise.resolve(res)
 }
 )
 export default axios

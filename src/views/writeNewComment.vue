@@ -1,17 +1,30 @@
 <template>
     <div>
         <topheader></topheader>
-        <h1>writeNewComment</h1>
+        <div class="EditorClass">
+          <editor></editor>
+        </div>
     </div>
 </template>
 <script>
 import topheader from '@/components/common/topheader'
+import editor from '@/components/common/editor'
 export default {
   name: 'writeNewComment',
+  methods: {
+  },
   components: {
-    topheader
+    topheader,
+    editor
   }
 }
 </script>
 <style>
+  .EditorClass {
+    font-size: 16px;
+    top: 1rem;
+    width: 100%;
+    position: fixed;
+    z-index:3000
+  }
 </style>

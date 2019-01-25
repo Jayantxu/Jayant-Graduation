@@ -2,7 +2,7 @@
     <div>
         <div class="TOPhead">
             <el-row :gutter="10" class="headRow-bg">
-                <el-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4">
+                <el-col :xs="2" :sm="4" :md="4" :lg="4" :xl="4">
                     <div class="col-content font22 mt5">
                         <i class="icon iconfont icon-shu iconfont48">
                         </i>
@@ -14,19 +14,19 @@
                     </div>
                 </el-col>
                 <!-- 搜索框 -->
-                <el-col :xs="10" :sm="7" :md="6" :lg="6" :xl="8">
+                <el-col :xs="7" :sm="7" :md="6" :lg="6" :xl="8">
                     <div class="col-content font22 mt10">
                         <el-input style="width:70%;" placeholder="请输入相关书名" suffix-icon="el-icon-search">
                         </el-input>
                     </div>
                 </el-col>
                 <!-- 撑位置用 -->
-                <el-col :xs="1" :sm="1" :md="3" :lg="2" :xl="4">
+                <el-col :xs="0" :sm="0" :md="1" :lg="2" :xl="4">
                     <div class="col-content font22 mt10">
                     </div>
                 </el-col>
-                <!-- 首页icon -->
-                <el-col :xs="2" :sm="2" :md="1" :lg="2" :xl="4">
+                <!-- 编辑与首页icon -->
+                <el-col :xs="4" :sm="4" :md="3" :lg="2" :xl="4">
                     <div class="col-content font22 mt10">
                         <i @click='returnWrite()' v-show="isLogin" class="mr20 icon iconfont icon-shuxie iconfont32 hover-click">
                         </i>
@@ -35,10 +35,10 @@
                     </div>
                 </el-col>
                 <!-- 用户icon -->
-                <el-col v-show="isLogin" :xs="0" :sm="2" :md="1" :lg="3" :xl="4">
+                <el-col v-if="isLogin" :xs="5" :sm="4" :md="3" :lg="3" :xl="4">
                     <div class="col-content font22 mt10">
                         <p class="font16 inline-block">用户{{DLusername}}</p>
-                        <el-dropdown @command='UserPersonClick'>
+                        <el-dropdown @command='UserPersonClick' >
                           <i class="icon iconfont icon-tubiaozhizuomobanyihuifu- iconfont32 hover-click">
                             <span class="el-dropdown-link">
                             </span>
@@ -51,7 +51,7 @@
                     </div>
                 </el-col>
                 <!-- 登录/注册 -->
-                <el-col v-show="!isLogin" :xs="7" :sm="4" :md="3" :lg="3" :xl="4">
+                <el-col v-if="!isLogin" :xs="7" :sm="4" :md="3" :lg="3" :xl="4">
                     <div class="col-content font16 mt15">
                         <i @click='LoginDialogVisible = true' class="icon iconfont icon-denglu iconfont25 hover-click">
                         </i>
@@ -219,7 +219,7 @@ export default {
           message: '取消登出'
         })
       })
-    },
+    }
   },
   mounted () {
     // 执行一遍该函数,目的是前往store中获取登录态

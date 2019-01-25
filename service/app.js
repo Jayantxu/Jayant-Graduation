@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const cookieParser = require('cookie-parser')
 const userPlay = require('./routes/userPlay')
+const articleChange = require('./routes/articleChange')
 const bodyParser = require('body-parser')
 app.use(cookieParser())
 app.use(bodyParser.json())
@@ -24,3 +25,5 @@ app.listen(3000, () => {
 /* 以下路由,大模块的路由 */
 // 用户相关性
 app.use('/api/user', userPlay)
+// 文章相关
+app.use('/api/article', articleChange)
