@@ -13,6 +13,9 @@ var sqlMap = {
   // 登录sql语句
   login: {
     loginIn: 'select password from userinfo where username = ?'
+  },
+  article: {
+    newArticle: 'insert into lsarticle (username, title, content, commitTime) values (?,?,?,?)'
   }
 }
 module.exports = sqlMap

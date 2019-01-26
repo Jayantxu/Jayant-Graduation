@@ -28,9 +28,9 @@ var token = {
     return obj
     // console.log(token)
   },
-  decodeToken: function (token) {
+  decodeToken: function (token, username) {
     var obj = {}
-    jwt.verify(token, secret, function (err, decoded) {
+    var result = jwt.verify(token, secret, function (err, decoded) {
       if (err) {
         if (err.message === 'jwt expired') {
           obj = {
@@ -40,14 +40,23 @@ var token = {
           }
         }
       } else {
-        obj = {
-          bool: true,
-          msg: '成功',
-          token: decoded
+        if (username !== decoded.uName) {
+          obj = {
+            bool: false,
+            msg: '失败',
+            token: decoded
+          }
+        } else {
+          obj = {
+            bool: true,
+            msg: '成功',
+            token: decoded
+          }
         }
       }
       return obj
     })
+    return result
   }
 }
 module.exports = token
