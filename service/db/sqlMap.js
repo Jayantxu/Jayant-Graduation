@@ -15,7 +15,7 @@ var sqlMap = {
     loginIn: 'select password from userinfo where username = ?'
   },
   article: {
-    newArticle: 'insert into LSArticle (username, title, content, timestamp) values (?,?,?,?)'
+    newArticle: 'insert into lsarticle (username, title, content, commitTime) values (?,?,?,?)'
   }
 }
 module.exports = sqlMap

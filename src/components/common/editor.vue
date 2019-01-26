@@ -81,7 +81,13 @@ export default {
           if (json.code !== '0') {
             return Promise.reject(json.msg)
           } else {
-            console.log(res)
+            this.$message({
+              message: `恭喜，${res.data.msg}`,
+              type: 'success'
+            })
+            setTimeout(function () {
+              location.href = '/'
+            }, 2000)
           }
         })
         .catch((err) => {

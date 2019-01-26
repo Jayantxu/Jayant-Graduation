@@ -2,6 +2,7 @@
 var mysql = require('mysql')
 var $conn = require('../db/db')
 var $sql = require('../db/sqlMap')
+var changeTime = require('../public/changeTime')
 // 引入token方法
 var tokenFun = require('../public/Token')
 // 使用连接池,提升性能
@@ -45,23 +46,40 @@ module.exports = {
         }
         jsonWrite(res, result)
       } else {
+        // 提交时间戳,用户名，标题，内容
+        var commitData = changeTime.toSqlTime() // 转指定格式时间
+        // console.log(`${commitData}+${username}+${title}+${content}`)
         pool.getConnection(function (err, connection) {
           if (err) {
-            throw new Error ('用户新文章数据库连接出错')
+            throw new Error('用户新文章数据库连接出错')
           }
-          connection.query($sql.article., [], (err, result) => {
+          connection.query($sql.article.newArticle, [$params.username, $params.articleTitle, $params.articleContent, commitData], function (err, result) {
             if (err) {
               result = {
                 code: '1',
+                data: {
+                  commitTime: commitData,
+                  username: $params.username
+                },
                 msg: '服务器出错'
               }
               jsonWrite(res, result)
               connection.release()
-              throw new Error('用户登录查询语句出错')
-            } else {
-              result = sqlformatJSON.transforms(result)
-              console.log(result)
+              console.log(err)
+              // throw new Error('用户新增新文章数据库语句出错')
             }
+            // result = sqlformatJSON.transforms(result)
+            result = {
+              // 40表未登录
+              code: '0',
+              data: {
+                commitTime: commitData,
+                username: $params.username
+              },
+              msg: '成功提交，请等待管理员审核，2秒后将跳转主页'
+            }
+            jsonWrite(res, result)
+            connection.release()
           })
         })
       }
