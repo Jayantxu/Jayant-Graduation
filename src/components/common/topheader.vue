@@ -131,7 +131,7 @@ export default {
     // 识别用户对el-dropdown的时间 @command='UserPersonClick'
     UserPersonClick (command) {
       if (command === 'PersonHome') {
-        console.log('个人主页')
+        location.href = '/userCenter'
       }
       if (command === 'LoginOut') {
         this.LoginOut()

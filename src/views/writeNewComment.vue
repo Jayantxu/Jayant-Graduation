@@ -7,8 +7,8 @@
     </div>
 </template>
 <script>
-import topheader from '@/components/common/topheader'
-import editor from '@/components/common/editor'
+import topheader from '../components/common/topheader'
+import editor from '../components/common/editor'
 export default {
   name: 'writeNewComment',
   methods: {

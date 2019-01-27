@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/views/Home'
-import register from '@/views/register'
-import findPWD from '@/views/FindPWD'
-import writeNewComment from '@/views/writeNewComment'
+import Home from '../views/Home'
+import register from '../views/Register'
+import findPWD from '../views/FindPWD'
+import writeNewComment from '../views/writeNewComment'
+import userCenter from '../views/userCenter'
 
 Vue.use(Router)
 
@@ -29,6 +30,11 @@ export default new Router({
       path: '/writeNewComment',
       name: '/writeNewComment',
       component: writeNewComment
+    },
+    {
+      path: '/userCenter',
+      name: '/userCenter',
+      component: userCenter
     }
   ]
 })
