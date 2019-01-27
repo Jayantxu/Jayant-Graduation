@@ -114,7 +114,9 @@ module.exports = {
           // console.log(toJSON)
           result = {
             code: '0',
-            data: {},
+            data: {
+              username: $params.username
+            },
             msg: '密码修改成功,将自动跳转首页！'
           }
           jsonWrite(res, result)
