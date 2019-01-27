@@ -41,7 +41,7 @@
     </div>
 </template>
 <script>
-import topheader from '@/components/common/topheader'
+import topheader from '../components/common/topheader'
 // import store from '@/store'
 export default {
   name: 'findPWD',

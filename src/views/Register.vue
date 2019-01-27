@@ -50,7 +50,7 @@
     </div>
 </template>
 <script>
-import topheader from '@/components/common/topheader'
+import topheader from '../components/common/topheader'
 export default {
   name: 'register',
   components: {
