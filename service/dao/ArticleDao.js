@@ -2,6 +2,8 @@
 var mysql = require('mysql')
 var $conn = require('../db/db')
 var $sql = require('../db/sqlMap')
+var fs = require('fs')
+var path = require('path')
 var changeTime = require('../public/changeTime')
 // 引入token方法
 var tokenFun = require('../public/Token')
@@ -9,6 +11,9 @@ var tokenFun = require('../public/Token')
 var pool = mysql.createPool($conn.mysql)
 // 引入mysql转JSON
 var sqlformatJSON = require('../public/sqlformatJSON')
+// 接收文件
+var formidable = require('formidable')
+var form = new formidable.IncomingForm()
 var jsonWrite = function (res, ret) {
   if (typeof ret === 'undefined') {
     res.json({
@@ -84,5 +89,30 @@ module.exports = {
         })
       }
     }
+  },
+  uploadFile: function (req, res, next) {
+    form.uploadDir = './uploadFile'
+    form.parse(req, function (err, field, files) {
+      // fields存放json数据，files存放的是文件信息
+      files.field = field
+      // 旧目录
+      console.log(files.file.path)
+      let oldpath = path.join(files.file.path)
+      var JsonFile = files.file
+      var fileName = JsonFile.name
+      console.log(fileName)
+      // 新的目录，为了防止同名，再加上随机数
+      var ranFileName = String(parseInt(Math.random() * 8999 + 10000)).concat(fileName)
+      console.log(ranFileName)
+      let newpath = path.join('./uploadFile', ranFileName)
+      fs.rename(oldpath, newpath, function (err) {
+        if (err) {
+          throw Error(err)
+        }
+      })
+      if (err) {
+        console.log('出错')
+      }
+    })
   }
 }

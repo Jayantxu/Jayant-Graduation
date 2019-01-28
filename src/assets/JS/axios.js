@@ -27,10 +27,11 @@ axios.interceptors.request.use((config) => {
 // 统一对响应进行拦截器处理*-*-*主要处理状态不通问题
 axios.interceptors.response.use(function (response) {
   if (response.data.code === '40') {
-    window.alert('用户未登录，点击确定，两秒后将跳转主页')
+    window.alert('用户未登录，点击确定，一秒后将跳转主页')
+    window.localStorage.clear()
     setTimeout(function () {
       location.href = '/'
-    }, 2000)
+    }, 1000)
   } else {
     return response
   }

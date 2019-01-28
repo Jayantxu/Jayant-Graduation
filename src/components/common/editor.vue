@@ -1,5 +1,5 @@
 <template>
-    <div class="comment-Edit">
+    <div class="comment-Edit" v-loading="uploading">
       <el-form :model="ruleEditor" :rules="rules" ref="ruleEditor">
         <el-form-item prop="commentTitle">
           <el-input v-model="ruleEditor.commentTitle" placeholder="请输入标题"></el-input>
@@ -7,6 +7,24 @@
         <div ref="editor" style="text-align:left" >
         </div>
       </el-form>
+      <div class="mt20 ml20 vw20">
+        <el-upload
+          class="upload-demo"
+          ref="upload"
+          action=""
+          :with-credentials="true"
+          :on-error="handleError"
+          :limit="1"
+          :before-upload="beforeAvatarUpload"
+          :file-list="fileList"
+          :http-request="personUpload"
+          :on-exceed="uploadExceed"
+          :auto-upload="false">
+          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+          <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传jpg、pdf、doc文件，且不超过5MB</div>
+        </el-upload>
+      </div>
       <div class="mt15 btn-l20">
         <el-button type="warning" round @click="clearDialog = true">重置编辑框</el-button>
         <el-button type="primary" round  @click="commitContent('ruleEditor')">提交</el-button>
@@ -34,8 +52,11 @@
 import E from 'wangeditor'
 export default {
   name: 'editor',
+  components: {
+  },
   data () {
     return {
+      uploading: false,
       editorObj: '',
       editorContenthtml: '',
       clearDialog: false,
@@ -47,10 +68,57 @@ export default {
         commentTitle: [
           {required: true, message: '请输入标题', trigger: 'blur'}
         ]
-      }
+      },
+      fileList: [
+      ]
     }
   },
   methods: {
+    /*  以下上传文件相关  */
+    submitUpload () {
+      this.$refs.upload.submit()
+    },
+    // 自定义的上传方法
+    personUpload (params) {
+      const _file = params.file
+      var formData = new FormData()
+      formData.append('file', _file)
+      // 配置header
+      var config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+      this.$http.post('/api/article/uploadFile', formData, config)
+        .then((res) => {
+          console.log('xx')
+        })
+      // 注意formData添加的不是挂载在实例上的
+      // console.log(formData.get('file'))
+    },
+    handleError (file) {
+      this.$message.error('上传失败')
+    },
+    uploadExceed (files, fileList) {
+      this.$message.error('只允许上传一个文件，无法添加')
+    },
+    beforeAvatarUpload (file) {
+      var fileType = file.name.substring(file.name.lastIndexOf('.') + 1)
+      console.log(fileType)
+      const isJPG = fileType === 'image/jpeg'
+      const iswordx = fileType === 'docx'
+      const isword = fileType === 'doc'
+      const ispdf = fileType === 'pdf'
+      const isLt5M = file.size / 1024 / 1024 < 5
+      if (!isJPG && !isword && !ispdf && !iswordx) {
+        this.$message.error('上传只能是 JPG、doc、pdf 格式!')
+      }
+      if (!isLt5M) {
+        this.$message.error('上传图片大小不能超过 5MB!')
+      }
+      return (isJPG || isword || ispdf || iswordx) && isLt5M
+    },
+    /*  以上上传文件相关  */
     clearEditor: function () {
       // 给弹框提示： 清空谨慎
       this.editorObj.txt.clear()
@@ -67,8 +135,9 @@ export default {
         }
       })
     },
-    commintEditor: function () {
+    commintEditor: function (params) {
       // 提交内容并且发送给后台
+      this.uploading = true
       this.$http.post('/api/article/commitNewArticle', {
         params: {
           articleTitle: this.ruleEditor.commentTitle,
@@ -78,6 +147,7 @@ export default {
       })
         .then((res) => {
           var json = res.data
+          this.uploading = false
           if (json.code !== '0') {
             return Promise.reject(json.msg)
           } else {
@@ -91,6 +161,7 @@ export default {
           }
         })
         .catch((err) => {
+          this.uploading = false
           this.$message({
             message: err,
             type: 'error'
