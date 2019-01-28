@@ -8,20 +8,19 @@
         </div>
       </el-form>
       <div class="mt20 ml20 vw20">
-        <el-upload
-          class="upload-demo"
-          ref="upload"
-          action=""
+        <el-upload class="upload-demo" ref="upload" action=""
           :with-credentials="true"
           :on-error="handleError"
           :limit="1"
           :before-upload="beforeAvatarUpload"
           :file-list="fileList"
-          :http-request="personUpload"
+          :http-request="commintEditor"
           :on-exceed="uploadExceed"
+          :on-change="uploadChange"
+          :on-remove="uploadRemove"
           :auto-upload="false">
           <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-          <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+          <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button> -->
           <div slot="tip" class="el-upload__tip">只能上传jpg、pdf、doc文件，且不超过5MB</div>
         </el-upload>
       </div>
@@ -42,7 +41,7 @@
         <span>确认提交您的编辑内容</span>
         <span slot="footer" class="dialog-footer">
           <el-button @click="commitDialog = false">取 消</el-button>
-          <el-button type="primary" @click="commintEditor()">确 定</el-button>
+          <el-button type="primary" @click="submitUpload">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -64,6 +63,8 @@ export default {
       ruleEditor: {
         commentTitle: ''
       },
+      // 是否有文件在列表
+      hasFile: false,
       rules: {
         commentTitle: [
           {required: true, message: '请输入标题', trigger: 'blur'}
@@ -76,25 +77,23 @@ export default {
   methods: {
     /*  以下上传文件相关  */
     submitUpload () {
-      this.$refs.upload.submit()
-    },
-    // 自定义的上传方法
-    personUpload (params) {
-      const _file = params.file
-      var formData = new FormData()
-      formData.append('file', _file)
-      // 配置header
-      var config = {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      if (this.hasFile) {
+        this.$refs.upload.submit()
+      } else {
+        this.commintEditor(false)
       }
-      this.$http.post('/api/article/uploadFile', formData, config)
-        .then((res) => {
-          console.log('xx')
-        })
-      // 注意formData添加的不是挂载在实例上的
-      // console.log(formData.get('file'))
+    },
+    // 文件添加改变时的-用于标记变量
+    uploadChange (file, fileList) {
+      this.hasFile = !this.hasFile
+      // console.log(fileList.length)
+      // console.log(this.hasFile)
+    },
+    // 文件移除改变时的-用于标记变量
+    uploadRemove (file, fileList) {
+      this.hasFile = !this.hasFile
+      // console.log(fileList.length)
+      // console.log(this.hasFile)
     },
     handleError (file) {
       this.$message.error('上传失败')
@@ -137,14 +136,25 @@ export default {
     },
     commintEditor: function (params) {
       // 提交内容并且发送给后台
+      var formData = new FormData()
       this.uploading = true
-      this.$http.post('/api/article/commitNewArticle', {
-        params: {
-          articleTitle: this.ruleEditor.commentTitle,
-          articleContent: this.editorContenthtml,
-          username: this.$store.state.DLusername
+      if (params) {
+        const _file = params.file
+        formData.append('file', _file)
+      }
+      formData.append('articleTitle', this.ruleEditor.commentTitle)
+      formData.append('articleContent', this.editorContenthtml)
+      formData.append('username', this.$store.state.DLusername)
+      console.log(formData.get('uploadData'))
+      // 配置header
+      var config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
-      })
+      }
+      // 注意formData添加的不是挂载在实例上的
+      // console.log(formData.get('file'))
+      this.$http.post('/api/article/commitNewArticle', formData, config)
         .then((res) => {
           var json = res.data
           this.uploading = false
