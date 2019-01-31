@@ -9,4 +9,7 @@ var ArticleDao = require('../dao/ArticleDao')
 router.post('/commitNewArticle', function (req, res, next) {
   ArticleDao.commitNewArticle(req, res, next)
 })
+router.post('/uploadFile', function (req, res, next) {
+  ArticleDao.uploadFile(req, res, next)
+})
 module.exports = router

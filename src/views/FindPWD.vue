@@ -145,15 +145,24 @@ export default {
               var json = res.data
               if (json.code !== '0') {
                 return Promise.reject(json.msg)
+              }
+              if (json.data.username === this.$store.state.DLusername) {
+                this.$message({
+                  message: `恭喜，您的账户密码已修改，两秒后将跳转首页`,
+                  type: 'success'
+                })
+                this.$store.commit('LoginIn', {
+                  username: json.data.username
+                })
               } else {
                 this.$message({
                   message: `恭喜，${json.msg}`,
                   type: 'success'
                 })
-                setTimeout(function () {
-                  location.href = '/'
-                }, 2000)
               }
+              setTimeout(function () {
+                location.href = '/'
+              }, 2000)
             })
             .catch((err) => {
               this.$message({
