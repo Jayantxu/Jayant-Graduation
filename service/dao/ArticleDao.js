@@ -24,6 +24,44 @@ var jsonWrite = function (res, ret) {
     res.json(ret)
   }
 }
+var commitToSql = function (req, res, $params, locationPath) {
+  // 提交时间戳,用户名，标题，内容
+  var commitData = changeTime.toSqlTime() // 转指定格式时间
+  // console.log(`${commitData}+${username}+${title}+${content}`)
+  pool.getConnection(function (err, connection) {
+    if (err) {
+      throw new Error('用户新文章数据库连接出错')
+    }
+    connection.query($sql.article.newArticle, [$params.username, $params.articleTitle, $params.articleContent, locationPath, commitData], function (err, result) {
+      if (err) {
+        result = {
+          code: '1',
+          data: {
+            commitTime: commitData,
+            username: $params.username
+          },
+          msg: '服务器出错'
+        }
+        jsonWrite(res, result)
+        connection.release()
+        console.log(err)
+        // throw new Error('用户新增新文章数据库语句出错')
+      }
+      // result = sqlformatJSON.transforms(result)
+      result = {
+        // 40表未登录
+        code: '0',
+        data: {
+          commitTime: commitData,
+          username: $params.username
+        },
+        msg: '成功提交，请等待管理员审核，2秒后将跳转主页'
+      }
+      jsonWrite(res, result)
+      connection.release()
+    })
+  })
+}
 module.exports = {
   commitNewArticle: function (req, res, next) {
     var result = {}
@@ -38,7 +76,7 @@ module.exports = {
       }
       jsonWrite(res, result)
     } else {
-      // form.uploadDir = './uploadFile'
+      form.uploadDir = './uploadFile'
       form.parse(req, function (err, field, files) {
         if (err) {
           console.log('数据解析失败')
@@ -74,47 +112,22 @@ module.exports = {
             newpath = path.join('./uploadFile', ranFileName)
             fs.rename(oldpath, newpath, function (err) {
               if (err) {
-                throw new Error('重命名错误')
+                result = {
+                  // 40表未登录
+                  code: '1',
+                  data: {
+                  },
+                  msg: '新文章上传错误'
+                }
+                jsonWrite(res, result)
+                console.log(`上传文件重命名错误${err}`)
+              } else {
+                commitToSql(req, res, $params, newpath)
               }
             })
+          } else {
+            commitToSql(req, res, $params, newpath)
           }
-          console.log('继续进行')
-          // // 提交时间戳,用户名，标题，内容
-          // var commitData = changeTime.toSqlTime() // 转指定格式时间
-          // // console.log(`${commitData}+${username}+${title}+${content}`)
-          // pool.getConnection(function (err, connection) {
-          //   if (err) {
-          //     throw new Error('用户新文章数据库连接出错')
-          //   }
-          //   connection.query($sql.article.newArticle, [$params.username, $params.articleTitle, $params.articleContent, commitData], function (err, result) {
-          //     if (err) {
-          //       result = {
-          //         code: '1',
-          //         data: {
-          //           commitTime: commitData,
-          //           username: $params.username
-          //         },
-          //         msg: '服务器出错'
-          //       }
-          //       jsonWrite(res, result)
-          //       connection.release()
-          //       console.log(err)
-          //       // throw new Error('用户新增新文章数据库语句出错')
-          //     }
-          //     // result = sqlformatJSON.transforms(result)
-          //     result = {
-          //       // 40表未登录
-          //       code: '0',
-          //       data: {
-          //         commitTime: commitData,
-          //         username: $params.username
-          //       },
-          //       msg: '成功提交，请等待管理员审核，2秒后将跳转主页'
-          //     }
-          //     jsonWrite(res, result)
-          //     connection.release()
-          //   })
-          // })
         }
       })
     }
