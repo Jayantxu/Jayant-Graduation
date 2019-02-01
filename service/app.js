@@ -3,6 +3,7 @@ const app = express()
 const cookieParser = require('cookie-parser')
 const userPlay = require('./routes/userPlay')
 const articleChange = require('./routes/articleChange')
+const userCenter = require('./routes/userCenter')
 const bodyParser = require('body-parser')
 app.use(cookieParser())
 app.use(bodyParser.json())
@@ -27,3 +28,5 @@ app.listen(3000, () => {
 app.use('/api/user', userPlay)
 // 文章相关
 app.use('/api/article', articleChange)
+// 用户中心
+app.use('/api/userCenter', userCenter)
