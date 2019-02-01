@@ -5,8 +5,11 @@ import register from '../views/Register'
 import findPWD from '../views/FindPWD'
 import writeNewComment from '../views/writeNewComment'
 import userCenter from '../views/userCenter'
-import nav1 from '../views/leftNavuserInfo/nav1'
-import nav2 from '../views/leftNavuserInfo/nav2'
+import allArticleControl from '../views/FirstNav/allArticleControl'
+import changePersonInfo from '../views/FirstNav/changePersonInfo'
+import mySelfArticle from '../views/FirstNav/mySelfArticle'
+import NewArticleControl from '../views/FirstNav/NewArticleControl'
+import permissionC from '../views/FirstNav/permissionC'
 
 Vue.use(Router)
 
@@ -39,12 +42,60 @@ export default new Router({
     },
     {
       path: '/userCenter',
-      name: '用户中心',
+      name: '个人中心',
       component: userCenter,
       hidden: false,
       children: [
-        { path: '/userCenter/nav1', component: nav1, name: '行程计划', menuShow: true },
-        { path: '/userCenter/nav2', component: nav2, name: '我的任务', menuShow: true }
+        // 用户中心侧边栏功能
+        {
+          path: '/userCenter/changePersonInfo',
+          name: '个人信息修改',
+          component: changePersonInfo,
+          hidden: false
+        },
+        {
+          path: '/userCenter/mySelfArticle',
+          name: '个人文章管理',
+          component: mySelfArticle,
+          hidden: false,
+          hasSChild: true
+        }
+      ]
+    },
+    {
+      path: '/userCenter',
+      name: '管理员中心',
+      component: userCenter,
+      hidden: false,
+      children: [
+        // 用户中心侧边栏功能
+        {
+          path: '/userCenter/allArticleControl',
+          name: '所有文章',
+          component: allArticleControl,
+          hidden: false
+        },
+        {
+          path: '/userCenter/NewArticleControl',
+          name: '新文章管理',
+          component: NewArticleControl,
+          hidden: false
+        }
+      ]
+    },
+    {
+      path: 'userCenter',
+      name: '权限管理',
+      component: userCenter,
+      hidden: false,
+      children: [
+        // 用户中心侧边栏功能
+        {
+          path: '/userCenter/permissionC',
+          name: '权限配置中心',
+          component: permissionC,
+          hidden: false
+        }
       ]
     }
   ]
