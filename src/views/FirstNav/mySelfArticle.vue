@@ -18,7 +18,7 @@ export default {
   },
   data () {
     return {
-     changeAbout: false
+      changeAbout: false
     }
   }
 }
@@ -27,6 +27,5 @@ export default {
   .myselfArticleCenter {
     width: 100%;
     height: 100vh;
-    border: 2px solid black;
   }
 </style>

@@ -137,7 +137,7 @@ export default {
     },
     resetCQUESForm (centerCQUESForm) {
       this.$refs[centerCQUESForm].resetFields()
-    },
+    }
   }
 }
 </script>
