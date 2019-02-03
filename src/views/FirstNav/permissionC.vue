@@ -21,7 +21,7 @@
             <el-button size="mini" type="warning" @click="openConfirm(scope.$index, scope.row)">
               重置用户密保
             </el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">
+            <el-button size="mini" type="danger" @click="openDeletefirm(scope.$index, scope.row)">
               删除用户
             </el-button>
           </template>
@@ -29,15 +29,19 @@
       </el-table>
     </div>
     <pagination class="mt20" :parentTotalNum="totalUserNum" @sendNowPageToFather="getNowPagefromChild"></pagination>
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible"
-      width="30%"
-      :before-close="handleClose">
-      <span>这是一段信息</span>
+    <!-- 删除用户身份确认框 -->
+    <el-dialog title='请确认您的身份' class="text-left normal-font-size"  :visible.sync="deleteuserDialog" width="40%" >
+      <el-form label-width="20%" :model="deleteUserForm" :rules='Deleterules' ref="deleteUserForm" >
+        <el-form-item label="问题" prop="Adminquestion">
+          <el-input v-model='deleteUserForm.Adminquestion' disabled :placeholder="Adminquestion"></el-input>
+        </el-form-item>
+        <el-form-item label="答案" prop="Adminanswer">
+          <el-input v-model='deleteUserForm.Adminanswer' clearable></el-input>
+        </el-form-item>
+      </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button @click="LoginDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click='commitDelete("deleteUserForm")'>确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -54,7 +58,21 @@ export default {
       totalUserNum: 0,
       getUserloading: false,
       tableData: [],
-      dialogVisible: false
+      deleteuserDialog: false,
+      deleteUsername: '',
+      deleteRowName: '',
+      Adminquestion: 'sss',
+      deleteUserForm: {
+        Adminanswer: '',
+        Adminquestion: ''
+      },
+      Deleterules: {
+        Adminanswer: [
+          {required: true, message: '请回答问题', trigger: 'blur'},
+          {min: 5, max: 20, message: '答案长度请保持在5-20个字符', trigger: 'blur'}
+        ],
+        Adminquestion: []
+      }
     }
   },
   methods: {
@@ -86,11 +104,99 @@ export default {
     },
     // 重置用户密保的警告框
     openConfirm: function (index, row) {
-      this.dialogVisible = true
+      this.$confirm('此操作将重置用户密保，用于找回密码，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.changeUserAnswer1(index, row)
+      }).catch(() => {
+        console.log('取消重置密保')
+      })
     },
     // 重置用户密保
     changeUserAnswer1: function (index, row) {
-      console.log(row.username)
+      // console.log(row.username)
+      this.$http.post('/api/userCenter/changeUserAnswer', {
+        params: {
+          cutusername: row.username,
+          username: this.$store.state.DLusername
+        }
+      }).then((res) => {
+        var json = res.data
+        if (json.code !== '0') {
+          return Promise.reject(json.msg)
+        } else {
+          this.$message.info(json.msg)
+          this.getUserData(this.nowPage)
+        }
+      }).catch((err) => {
+        this.$message.error(err)
+      })
+    },
+    // 删除用户弹出框
+    openDeletefirm: function (index, row) {
+      this.$confirm('此操作将删除系统用户，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'error'
+      }).then(() => {
+        this.getAdminQuestion(index, row)
+      }).catch(() => {
+        console.log('取消重置密保')
+      })
+    },
+    // 获取操作者密保问题
+    getAdminQuestion: function (index, row) {
+      // 正确情况--向后台拿问题
+      this.$http.get('/api/user/findQuestion', {
+        params: {
+          username: this.$store.state.DLusername
+        }
+      }).then((res) => {
+        // 将找回来的问题给与select,并且打开单选框的可编辑
+        var json = res.data
+        if (json.code !== '0') {
+          return Promise.reject(json.msg)
+        } else {
+          this.deleteRowName = row.username
+          var boolbool = json.data
+          this.Adminquestion = this.$store.state.question[boolbool]
+          this.deleteuserDialog = true
+          // console.log(this.deleteRowName)
+        }
+      }).catch((err) => {
+        this.$message.error(err)
+      })
+    },
+    // 确认身份后提交删除
+    commitDelete: function (deleteUserForm) {
+      this.$refs[deleteUserForm].validate((valid) => {
+        if (valid) {
+          this.$http.post('/api/userCenter/deleteUser', {
+            params: {
+              cutusername: this.deleteRowName,
+              username: this.$store.state.DLusername,
+              answer: this.deleteUserForm.Adminanswer
+            }
+          }).then((res) => {
+            var json = res.data
+            if (json.code !== '0') {
+              return Promise.reject(json.msg)
+            } else {
+              this.$message.success(json.msg)
+              this.deleteRowName = ''
+              this.deleteuserDialog = false
+              this.getUserData(this.nowPage)
+            }
+          }).catch((err) => {
+            this.$message.error(err)
+          })
+        } else {
+          this.$message.error('表单错误')
+          return false
+        }
+      })
     },
     // 表单转换文字
     formatPermission (row, column) {

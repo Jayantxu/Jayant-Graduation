@@ -23,7 +23,9 @@ var sqlMap = {
   userCenter: {
     getuserTotal: 'select count(*) as numT from userinfo where username != ?',
     getallUser: 'select username,permission,registertime from userinfo where username != ? limit ?,10',
-    changeuserpermission: 'update userinfo SET permission = ? where username = ?'
+    changeuserpermission: 'update userinfo SET permission = ? where username = ?',
+    changeuserAnswer: 'update userinfo SET answer = ? where username =?',
+    deleteUser: 'delete from userinfo where username = ?'
   }
 }
 module.exports = sqlMap
