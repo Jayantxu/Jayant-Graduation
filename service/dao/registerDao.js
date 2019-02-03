@@ -41,7 +41,7 @@ module.exports = {
             msg: '用户已存在，请更换用户名'
           }
           jsonWrite(res, result)
-          connection.release()
+          pool.releaseConnection(connection)
         } else {
           connection.query($sql.register.registerAdd, [$params.username, $params.password, $params.question, $params.answer, registerData], function (err, result) {
             if (err) {
@@ -52,7 +52,7 @@ module.exports = {
               msg: '用户注册成功'
             }
             jsonWrite(res, result)
-            connection.release()
+            pool.releaseConnection(connection)
           })
         }
       })

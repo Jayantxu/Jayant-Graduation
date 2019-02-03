@@ -5,6 +5,7 @@
 */
 import axios from 'axios'
 axios.defaults.withCredentials = true
+axios.defaults.timeout = 6000
 axios.defaults.baseURL = 'http://localhost:3000'
 // 统一对请求进行拦截器处理*-*-*主要处理未登录状态问题
 axios.interceptors.request.use((config) => {

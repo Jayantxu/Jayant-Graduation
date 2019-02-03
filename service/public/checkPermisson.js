@@ -21,16 +21,16 @@ module.exports = {
               permission: 'err',
               msg: '权限配置语句错误'
             }
-            connection.release()
             reject(endresult)
+            pool.releaseConnection(connection)
           } else {
             // 将寻找到的密码与加密后进行匹配,并在此处处理token问题
             var end = sqlformatJSON.transforms(result)
             endresult = {
               permission: end[0].permission
             }
-            connection.release()
             resolve(endresult)
+            pool.releaseConnection(connection)
           }
         })
       })

@@ -43,7 +43,7 @@ var commitToSql = function (req, res, $params, locationPath) {
           msg: '服务器出错'
         }
         jsonWrite(res, result)
-        connection.release()
+        pool.releaseConnection(connection)
         console.log(err)
         // throw new Error('用户新增新文章数据库语句出错')
       }
@@ -58,7 +58,7 @@ var commitToSql = function (req, res, $params, locationPath) {
         msg: '成功提交，请等待管理员审核，2秒后将跳转主页'
       }
       jsonWrite(res, result)
-      connection.release()
+      pool.releaseConnection(connection)
     })
   })
 }

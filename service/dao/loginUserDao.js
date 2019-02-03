@@ -37,7 +37,7 @@ module.exports = {
             msg: '服务器出错'
           }
           jsonWrite(res, result)
-          connection.release()
+          pool.releaseConnection(connection)
           throw new Error('用户登录查询语句出错')
         } else {
           // 将寻找到的密码与加密后进行匹配,并在此处处理token问题
@@ -69,7 +69,7 @@ module.exports = {
             })
           }
           jsonWrite(res, result)
-          connection.release()
+          pool.releaseConnection(connection)
         }
       })
     })

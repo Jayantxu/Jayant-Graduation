@@ -11,24 +11,35 @@
         </el-table-column>
         <el-table-column label="权限配置">
           <template slot-scope="scope">
-            <el-button size="mini" type="" @click="handleDelete(scope.$index, scope.row)">
-              设为管理员
+            <el-button size="mini" type="" @click="changeUserPermissioin(scope.$index, scope.row)">
+              {{scope.row.permission === '0' ? '设为管理员' : '设为普通用户'}}
             </el-button>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">
+            <el-button size="mini" type="warning" @click="openConfirm(scope.$index, scope.row)">
               重置用户密保
             </el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">
-              删除
+              删除用户
             </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <pagination class="mt20" :parentTotalNum="totalUserNum" @sendNowPageToFather="getNowPagefromChild"></pagination>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose">
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -42,25 +53,55 @@ export default {
       nowPage: 1,
       totalUserNum: 0,
       getUserloading: false,
-      tableData: [{
-        date: '2016-05-02',
-        title: '王小虎',
-        author: '上海市普陀区金沙江路 1518 弄',
-        hasFile: '上海市普陀区金沙江路 1518 弄'
-      }]
+      tableData: [],
+      dialogVisible: false
     }
   },
   methods: {
-    handleDelete: function (a, b) {
-      console.log(`${a}****${b.author}`)
+    // 修改用户权限
+    changeUserPermissioin: function (index, row) {
+      var CUTusername = row.username
+      var CUTpermission = row.permission
+      this.$http.post('/api/userCenter/changeUserPermission', {
+        params: {
+          username: this.$store.state.DLusername,
+          cutusername: CUTusername,
+          oldpermission: CUTpermission
+        }
+      }).then((res) => {
+        var json = res.data
+        if (json.code !== '0') {
+          // console.log(json)
+          this.$message({
+            message: `警告，${json.msg}`,
+            type: 'warning'
+          })
+        } else {
+          this.$message.info(json.msg)
+          this.getUserData(this.nowPage)
+        }
+      }).catch((err) => {
+        this.$message.error(err)
+      })
     },
+    // 重置用户密保的警告框
+    openConfirm: function (index, row) {
+      this.dialogVisible = true
+    },
+    // 重置用户密保
+    changeUserAnswer1: function (index, row) {
+      console.log(row.username)
+    },
+    // 表单转换文字
     formatPermission (row, column) {
-      return row.permission == '0' ? '普通用户' : row.permission == '1' ? '管理员' : ''
+      return row.permission === '0' ? '普通用户' : row.permission === '1' ? '管理员' : ''
     },
     // 获取分页组件的页数
     getNowPagefromChild (nowpage) {
+      this.nowPage = nowpage
       this.getUserData(nowpage)
     },
+    // 获取用户数据
     getUserData: function (nowPage) {
       this.getUserloading = true
       this.$http.post('/api/userCenter/findAllUser', {
@@ -72,6 +113,8 @@ export default {
         .then((res) => {
           var json = res.data
           if (json.code !== '0') {
+            this.getUserloading = false
+            // console.log(json)
             this.$message({
               message: `警告，${json.msg}`,
               type: 'warning'
@@ -84,6 +127,7 @@ export default {
           }
         })
         .catch((err) => {
+          this.getUserloading = false
           this.$message.error(err)
         })
     }

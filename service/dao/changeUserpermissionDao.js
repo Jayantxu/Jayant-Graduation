@@ -17,23 +17,29 @@ var jsonWrite = function (res, ret) {
     res.json(ret)
   }
 }
-var getAlluserTotalPromise = function (username) {
+var changepermission2 = function (cutusername, newpermission) {
   var promise2 = new Promise(function (resolve, reject) {
     pool.getConnection(function (err, connection) {
       var result = {}
       if (err) {
         result = {
-          permission: 'err',
-          msg: '权限配置中心获取所有用户出错'
+          code: '1',
+          data: {
+          },
+          msg: '服务器出错'
         }
-        reject(result)
+        err = '修改用户权限数据库连接错误'
+        reject(result, err)
       }
-      connection.query($sql.userCenter.getuserTotal, [username], (err, result) => {
+      connection.query($sql.userCenter.changeuserpermission, [newpermission, cutusername], (err, result) => {
         if (err) {
           result = {
-            permission: 'err',
-            msg: '权限中心获取用户总数数据库语句错误'
+            code: '1',
+            data: {
+            },
+            msg: '服务器出错'
           }
+          err = '修改用户权限数据库语句错误'
           pool.releaseConnection(connection)
           reject(result)
         } else {
@@ -47,45 +53,12 @@ var getAlluserTotalPromise = function (username) {
   })
   return promise2
 }
-var getAlluserPromise = function (nowPage, username) {
-  var promise = new Promise(function (resolve, reject) {
-    pool.getConnection(function (err, connection) {
-      var result = {}
-      if (err) {
-        result = {
-          permission: 'err',
-          msg: '权限中心获取用户数据库连接错误'
-        }
-        reject(result)
-      }
-      var sqlPage = (nowPage - 1) * 10
-      connection.query($sql.userCenter.getallUser, [username, sqlPage], (err, result) => {
-        if (err) {
-          result = {
-            permission: 'err',
-            msg: '权限中心获取用户数据库语句错误'
-          }
-          pool.releaseConnection(connection)
-          reject(result)
-        } else {
-          // 将寻找到的密码与加密后进行匹配,并在此处处理token问题
-          result = sqlformatJSON.transforms(result)
-          resolve(result)
-          pool.releaseConnection(connection)
-        }
-      })
-    })
-  })
-  return promise
-}
-
 module.exports = {
-  findAllUser: function (req, res, next) {
+  changepermission: function (req, res, next) {
     var result = {}
     var $token = req.cookies.token
     // 获取用户传递参数
     var $params = req.body.params
-    var TotalUser = 0
     if (!$token) {
       result = {
         // 40表未登录
@@ -96,41 +69,37 @@ module.exports = {
       }
       jsonWrite(res, result)
     } else {
-      var nowPage = $params.page
+      var cutusername = $params.cutusername
+      var newpermission = ($params.oldpermission === '0' ? '1' : '0')
       var username = $params.username
+      // console.log(newpermission)
       checkPermisson.checkUserPermission(username)
         .then((json) => {
           var permiss = json.permission
           if (permiss !== '2') {
             result = {
-              permission: 'err',
+              code: '1',
               msg: '用户权限不足'
             }
             return Promise.reject(result)
           } else {
-            return getAlluserTotalPromise(username)
+            // changePermission的方法2
+            return changepermission2(cutusername, newpermission)
           }
         })
         .then((json) => {
-          TotalUser = json[0].numT
-          return getAlluserPromise(nowPage, username)
-        })
-        .then((json) => {
-          // console.log(json)
           result = {
             code: '0',
             data: {
-              Total: TotalUser,
-              data: json
+              cutusername: cutusername
             },
-            msg: '用户查询成功'
+            msg: '用户修改成功'
           }
           jsonWrite(res, result)
         })
-        .catch((err) => {
-          result = err
+        .catch((result, err) => {
           jsonWrite(res, result)
-          console.log(err)
+          throw new Error(err)
         })
     }
   }
