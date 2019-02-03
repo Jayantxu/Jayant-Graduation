@@ -45,6 +45,9 @@ html {
     font-size: 0.16rem;
 }
 /*各种边距*/
+.ml100 {
+    margin-left: 1rem;
+}
 .ml80 {
     margin-left: 0.8rem;
 }
@@ -71,6 +74,9 @@ html {
 }
 .mt40 {
     margin-top: 0.4rem;
+}
+.mt50 {
+    margin-top: 0.5rem;
 }
 .mt80 {
     margin-top:0.8rem;
@@ -149,19 +155,32 @@ html {
 .vw20 {
     width: 20%;
 }
+/*高度*/
+.h20 {
+    height: 0.2rem;
+}
+.h40 {
+    height: 0.4rem;
+}
+.h60 {
+    height: 0.6rem;
+}
+.h80 {
+    height: 0.8rem;
+}
 /*element-ui的提示信息的font-size*/
 .el-message {
     font-size: 16px !important;
 }
 /*字位置*/
 .text-center {
-    text-align: center;
+    text-align: center !important;
 }
 .text-left {
-    text-align: left;
+    text-align: left !important;
 }
 .text-right {
-    text-align: right;
+    text-align: right !important;
 }
 /* display */
 .inline-block {
@@ -183,4 +202,11 @@ html {
 // 退出登录的下拉框
 .el-dropdown-menu {
     z-index: 10000 !important
+}
+/*定位*/
+.absolute {
+    position: absolute;
+}
+.relative {
+    position:relative;
 }

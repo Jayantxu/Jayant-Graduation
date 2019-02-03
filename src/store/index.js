@@ -11,7 +11,8 @@ const store = () => new Vuex.Store({
     question: {
       'Q001': '你最喜欢的歌手?',
       'Q002': '你的工作？',
-      'Q003': '你最喜欢的书籍？'
+      'Q003': '你最喜欢的书籍？',
+      'Q004': '你的出生地？'
     },
     isLogin: false,
     DLusername: ''

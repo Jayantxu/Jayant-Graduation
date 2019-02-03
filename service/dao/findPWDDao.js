@@ -49,7 +49,7 @@ module.exports = {
           }
           // 如果出错,关闭连接并返回错误
           jsonWrite(res, result)
-          connection.release()
+          pool.releaseConnection(connection)
           throw new Error('找回密码寻找问题出错')
         }
         // console.log(JSON.stringify(result))
@@ -64,7 +64,7 @@ module.exports = {
           msg: '查找成功'
         }
         jsonWrite(res, result)
-        connection.release()
+        pool.releaseConnection(connection)
       })
     })
   },
@@ -95,7 +95,7 @@ module.exports = {
         }
         // 如果出错,关闭连接并返回错误
         jsonWrite(res, result)
-        connection.release()
+        pool.releaseConnection(connection)
         throw new Error('找回密码用户连接池出错')
       }
       connection.query($sql.findPWD.changPWD, [$params.newpassword, $params.username], function (err, result) {
@@ -107,7 +107,7 @@ module.exports = {
           }
           // 如果出错,关闭连接并返回错误
           jsonWrite(res, result)
-          connection.release()
+          pool.releaseConnection(connection)
           throw new Error('找回密码插入新密码出错')
         } else {
           // var toJSON = sqlformatJSON.transforms(result)
@@ -120,7 +120,7 @@ module.exports = {
             msg: '密码修改成功,将自动跳转首页！'
           }
           jsonWrite(res, result)
-          connection.release()
+          pool.releaseConnection(connection)
         }
       })
     })

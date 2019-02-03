@@ -2,6 +2,7 @@
 var mysql = require('mysql')
 var $conn = require('../db/db')
 var $sql = require('../db/sqlMap')
+var changeTime = require('../public/changeTime')
 // 引入加解密处理方法
 var bcryptFun = require('../public/crypto')
 // 使用连接池,提升性能
@@ -23,6 +24,7 @@ module.exports = {
     // console.log($params)
     // 对密码加密
     $params.password = bcryptFun.bcryptInfo($params.password)
+    var registerData = changeTime.toSqlTime2()
     pool.getConnection(function (err, connection) {
       if (err) {
         throw new Error('注册用户连接池出错')
@@ -39,9 +41,9 @@ module.exports = {
             msg: '用户已存在，请更换用户名'
           }
           jsonWrite(res, result)
-          connection.release()
+          pool.releaseConnection(connection)
         } else {
-          connection.query($sql.register.registerAdd, [$params.username, $params.password, $params.question, $params.answer], function (err, result) {
+          connection.query($sql.register.registerAdd, [$params.username, $params.password, $params.question, $params.answer, registerData], function (err, result) {
             if (err) {
               throw new Error('注册用户插入语句出错')
             }
@@ -50,7 +52,7 @@ module.exports = {
               msg: '用户注册成功'
             }
             jsonWrite(res, result)
-            connection.release()
+            pool.releaseConnection(connection)
           })
         }
       })
