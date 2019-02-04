@@ -25,7 +25,8 @@ var sqlMap = {
     getallUser: 'select username,permission,registertime from userinfo where username != ? limit ?,10',
     changeuserpermission: 'update userinfo SET permission = ? where username = ?',
     changeuserAnswer: 'update userinfo SET answer = ? where username =?',
-    deleteUser: 'delete from userinfo where username = ?'
+    deleteUser: 'delete from userinfo where username = ?',
+    changUserQuestionAnswer: 'update userinfo SET question = ?, answer = ? where username = ?'
   }
 }
 module.exports = sqlMap
