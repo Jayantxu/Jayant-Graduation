@@ -2,6 +2,7 @@ var express = require('express')
 var router = express.Router()
 var checkLoginDao = require('../dao/checkLoginDao')
 var findAllUserDao = require('../dao/findAllUserDao')
+var findAllBookDao = require('../dao/findAllBookDao')
 var changeUserpermissionDao = require('../dao/changeUserpermissionDao')
 var changUserPwdDao = require('../dao/changUserPwdDao')
 // 检验用户是否登录
@@ -31,5 +32,11 @@ router.post('/changePWD', function (req, res, next) {
 // 权限配置中心用户修改密保
 router.post('/changeQUES', function (req, res, next) {
   changUserPwdDao.changeQUES(req, res, next)
+})
+router.post('/findAllBook', function (req, res, next) {
+  findAllBookDao.findAllBook(req, res, next)
+})
+router.post('/findAllLSBook', function (req, res, next) {
+  findAllBookDao.findAllLSBook(req, res, next)
 })
 module.exports = router

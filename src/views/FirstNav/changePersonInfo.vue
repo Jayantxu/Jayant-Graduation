@@ -221,24 +221,24 @@ export default {
       this.$http.post('/api/userCenter/changePWD', {
         params: toBackparams
       })
-      .then((res) => {
-        var json = res.data
-        if (json.code !== '0') {
-          return Promise.reject(json.msg)
-        } else {
-          // 密码修改需要退出登录，重新登录
-          // ----->
-          this.$store.commit('LoginIn', {
-            username: ''
-          })
-          this.$message.success(json.msg)
-          setTimeout(function () {
-            location.href = '/'
-          }, 2000)
-        }
-      })
-      .catch((err) => {
-        this.$message.error(err)
+        .then((res) => {
+          var json = res.data
+          if (json.code !== '0') {
+            return Promise.reject(json.msg)
+          } else {
+            // 密码修改需要退出登录，重新登录
+            // ----->
+            this.$store.commit('LoginIn', {
+              username: ''
+            })
+            this.$message.success(json.msg)
+            setTimeout(function () {
+              location.href = '/'
+            }, 2000)
+          }
+        })
+        .catch((err) => {
+          this.$message.error(err)
         })
     },
     resetForm (centerCPWDForm) {
@@ -263,7 +263,7 @@ export default {
       var newQUA = this.centerCQUESForm.newQuestion
       for (var item in arr) {
         if (arr[item] === newQUA) {
-          newQUA = item    
+          newQUA = item
         }
       }
       this.$http.post('/api/userCenter/changeQUES', {
@@ -274,19 +274,19 @@ export default {
           oldAN: this.centerCQUESForm.oldAnswer
         }
       })
-      .then((res) => {
-        var json = res.data
-        if (json.code !== '0') {
-          return Promise.reject(json.msg)
-        } else {
-          this.$refs[centerCQUESForm].resetFields()
-          this.getUserQuestion()
-          this.$message.success(json.msg)
-        }
-      })
-      .catch((err) => {
-        this.$message.error(err)
-      })
+        .then((res) => {
+          var json = res.data
+          if (json.code !== '0') {
+            return Promise.reject(json.msg)
+          } else {
+            this.$refs[centerCQUESForm].resetFields()
+            this.getUserQuestion()
+            this.$message.success(json.msg)
+          }
+        })
+        .catch((err) => {
+          this.$message.error(err)
+        })
     },
     resetCQUESForm (centerCQUESForm) {
       this.$refs[centerCQUESForm].resetFields()

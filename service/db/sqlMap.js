@@ -27,6 +27,13 @@ var sqlMap = {
     changeuserAnswer: 'update userinfo SET answer = ? where username =?',
     deleteUser: 'delete from userinfo where username = ?',
     changUserQuestionAnswer: 'update userinfo SET question = ?, answer = ? where username = ?'
+  },
+  Allbook: {
+    // 获取所有图书总数
+    getAllBookNum: 'select count(*) as numB from article',
+    getAllLSBookNum: 'select count(*) as numB from lsarticle',
+    getAllBook: 'select commitTime,title,username,fileLocation from article limit ?,10',
+    getAllLSBook: 'select commitTime,title,username,fileLocation from lsarticle where username != ? limit ?,10'
   }
 }
 module.exports = sqlMap
