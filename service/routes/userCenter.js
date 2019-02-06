@@ -39,4 +39,8 @@ router.post('/findAllBook', function (req, res, next) {
 router.post('/findAllLSBook', function (req, res, next) {
   findAllBookDao.findAllLSBook(req, res, next)
 })
+// 所有文章中删除
+router.post('/deleteAllBook', function (req, res, next) {
+  findAllBookDao.deleteAllBook(req, res, next)
+})
 module.exports = router

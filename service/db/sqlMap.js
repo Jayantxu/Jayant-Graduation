@@ -33,7 +33,9 @@ var sqlMap = {
     getAllBookNum: 'select count(*) as numB from article',
     getAllLSBookNum: 'select count(*) as numB from lsarticle',
     getAllBook: 'select commitTime,title,username,fileLocation from article limit ?,10',
-    getAllLSBook: 'select commitTime,title,username,fileLocation from lsarticle where username != ? limit ?,10'
+    getAllLSBook: 'select commitTime,title,username,fileLocation from lsarticle where username != ? limit ?,10',
+    deleteAllBook: 'delete from article where username = ? and title = ?',
+    deleteAllLSBook: 'delete from lsarticle where username = ? and title = ?'
   }
 }
 module.exports = sqlMap

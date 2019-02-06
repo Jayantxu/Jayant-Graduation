@@ -3,7 +3,7 @@
   <div>
     <div>
       <el-table :data="tableData" style="width: 100%" v-loading="getUserloading">
-        <el-table-column prop="commitTime" label="日期" width="120">
+        <el-table-column prop="commitTime" label="日期" width="200" :formatter="formatTime">
         </el-table-column>
         <el-table-column prop="title" label="标题" width="250">
         </el-table-column>
@@ -14,9 +14,9 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">
-              查阅
+              查看
             </el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">
+            <el-button size="mini" type="danger" @click="deleteUserBookALLMessage(scope.$index, scope.row)">
               删除
             </el-button>
           </template>
@@ -36,6 +36,7 @@ export default {
     return {
       totalUserNum: 0,
       getUserloading: false,
+      nowPage: 1,
       tableData: []
     }
   },
@@ -43,6 +44,46 @@ export default {
     // 转换附件的显示
     formatHasFile (row, column) {
       return row.fileLocation ? row.fileLocation : '无'
+    },
+    formatTime (row, column) {
+      // console.log(row.commitTime)
+      var HHMMSS = row.commitTime.split('T')[1].split('.')[0]
+      var YYMMDD = row.commitTime.split('T')[0]
+      // console.log(`${YYMMDD} ${HHMMSS}`)
+      return (`${YYMMDD} ${HHMMSS}`)
+    },
+    // 删除用户书籍
+    deleteUserBookALLMessage (index, row) {
+      this.$confirm('此操作将删除用户书籍，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'error'
+      }).then(() => {
+        this.deleteUserBookALL(index, row)
+      }).catch(() => {
+        console.log('取消删除')
+      })
+    },
+    deleteUserBookALL (index, row) {
+      // console.log(row)
+      this.$http.post('/api/userCenter/deleteAllBook', {
+        params: {
+          username: this.$store.state.DLusername,
+          bookusername: row.username,
+          booktitle: row.title,
+          bool: true
+        }
+      }).then((res) => {
+        var json = res.data
+        if (json.code !== '0') {
+          return Promise.reject(json.msg)
+        } else {
+          this.$message.success(json.msg)
+          this.getUserData(this.nowPage)
+        }
+      }).catch((err) => {
+        this.$message.error(err)
+      })
     },
     // 获取分页组件的页数
     getNowPagefromChild (nowpage) {
