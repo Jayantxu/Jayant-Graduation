@@ -43,4 +43,16 @@ router.post('/findAllLSBook', function (req, res, next) {
 router.post('/deleteAllBook', function (req, res, next) {
   findAllBookDao.deleteAllBook(req, res, next)
 })
+// 审核通过某书籍
+router.post('/LSBooktoSuccess', function (req, res, next) {
+  findAllBookDao.toSuccessBook(req, res, next)
+})
+// 审核不通过某书籍
+router.post('/LSBooktoError', function (req, res, next) {
+  findAllBookDao.toErrorBook(req, res, next)
+})
+// 个人查看已发布的文章
+router.post('/personfindAllBook', function (req, res, next) {
+  findAllBookDao.personfindAllBook(req, res, next)
+})
 module.exports = router

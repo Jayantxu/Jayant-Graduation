@@ -15,7 +15,7 @@ var sqlMap = {
     loginIn: 'select password from userinfo where username = ?'
   },
   article: {
-    newArticle: 'insert into lsarticle (username, title, content, fileLocation, commitTime) values (?,?,?,?,?)'
+    newArticle: 'insert into lsarticle (username, title, content, fileLocation, commitTime, bookstatus) values (?,?,?,?,?,0)'
   },
   Permission: {
     check: 'select permission from userinfo where username = ?'
@@ -33,9 +33,20 @@ var sqlMap = {
     getAllBookNum: 'select count(*) as numB from article',
     getAllLSBookNum: 'select count(*) as numB from lsarticle',
     getAllBook: 'select commitTime,title,username,fileLocation from article limit ?,10',
-    getAllLSBook: 'select commitTime,title,username,fileLocation from lsarticle where username != ? limit ?,10',
+    getAllLSBook: 'select commitTime,title,username,fileLocation,bookstatus from lsarticle where username != ? limit ?,10',
     deleteAllBook: 'delete from article where username = ? and title = ?',
     deleteAllLSBook: 'delete from lsarticle where username = ? and title = ?'
+  },
+  shenheBook: {
+    toSuccessBook: 'select username, title, content, fileLocation, commitTime from lsarticle where username = ? and title = ?',
+    addAllBook: 'insert into article (username, title, content, fileLocation, commitTime) values (?,?,?,?,?)',
+    changeButongGuostatus: 'update lsarticle SET bookstatus = 2 where username = ? and title = ?'
+  },
+  PersonAllbook: {
+    getPersonAllBookNum: 'select count(*) as numB from article where username = ? ',
+    getPersonAllLSBookNum: 'select count(*) as numB from lsarticle where username = ? ',
+    getPersonAllBook: 'select commitTime,title,username,fileLocation from article where username = ? limit ?,10',
+    getPersonAllLSBook: 'select commitTime,title,username,fileLocation,bookstatus from lsarticle where username = ? limit ?,10'
   }
 }
 module.exports = sqlMap
