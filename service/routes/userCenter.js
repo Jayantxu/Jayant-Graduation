@@ -55,4 +55,8 @@ router.post('/LSBooktoError', function (req, res, next) {
 router.post('/personfindAllBook', function (req, res, next) {
   findAllBookDao.personfindAllBook(req, res, next)
 })
+// 个人文章的删除操作
+router.post('/deletePersonBook', function (req, res, next) {
+  findAllBookDao.deletePersonBook(req, res, next)
+})
 module.exports = router

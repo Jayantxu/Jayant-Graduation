@@ -16,7 +16,7 @@
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">
               查看
             </el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">
+            <el-button size="mini" type="danger" @click="DeleteBookMessage(scope.$index, scope.row)">
               删除
             </el-button>
           </template>
@@ -52,6 +52,37 @@ export default {
     // 转换附件
     formatHasFile (row, column) {
       return row.fileLocation ? row.fileLocation : '无'
+    },
+    // 删除书籍
+    DeleteBookMessage (index, row) {
+      this.$confirm('您确认将删除此书籍吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'error'
+      }).then(() => {
+        this.DeleteBook(index, row)
+      }).catch(() => {
+        console.log('取消删除')
+      })
+    },
+    DeleteBook (index, row) {
+      this.$http.post('/api/userCenter/deletePersonBook', {
+        params: {
+          username: this.$store.state.DLusername,
+          booktitle: row.title,
+          bool: true
+        }
+      }).then((res) => {
+        var json = res.data
+        if (json.code !== '0') {
+          return Promise.reject(json.msg)
+        } else {
+          console.log(json.msg)
+          this.$message.warning(json.msg)
+        }
+      }).catch((err) => {
+        this.$message.error(err)
+      })
     },
     // 获取分页组件的页数
     getNowPagefromChild (nowpage) {

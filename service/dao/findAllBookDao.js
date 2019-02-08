@@ -313,5 +313,32 @@ module.exports = {
           jsonWrite.jsonWrite(res, err)
         })
     }
+  },
+  deletePersonBook: function (req, res, next) {
+    var result = {}
+    var $token = req.cookies.token
+    var $params = req.body.params
+    if (!$token) {
+      result = {
+        // 40表未登录
+        code: '40',
+        data: {
+        },
+        msg: '用户未登录'
+      }
+      jsonWrite.jsonWrite(res, result)
+    } else {
+      var username = $params.username
+      var booktitle = $params.booktitle
+      var bool = $params.bool
+      // 去寻找用户密保答案是否正确
+      return getBook.deletePersonUserBook(bool, username, booktitle)
+        .then((json) => {
+          jsonWrite.jsonWrite(res, json)
+        })
+        .catch((err) => {
+          jsonWrite.jsonWrite(res, err)
+        })
+    }
   }
 }

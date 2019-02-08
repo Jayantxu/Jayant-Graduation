@@ -310,5 +310,47 @@ module.exports = {
         })
       })
     })
+  },
+  deletePersonUserBook: function (bool, bookusername, booktitle) {
+    return new Promise(function (resolve, reject) {
+      pool.getConnection(function (err, connection) {
+        var result = {}
+        if (err) {
+          result = {
+            code: '1',
+            data: {
+            },
+            msg: '服务器出错'
+          }
+          console.log('个人文章管理删除文章数据库连接错误')
+          reject(result)
+        }
+        var str = bool ? $sql.PersonAllbook.deletePersonAllBook : $sql.PersonAllbook.deletePersonAllLSBook
+        connection.query(str, [bookusername, booktitle], (err, result) => {
+          if (err) {
+            result = {
+              code: '1',
+              data: {
+              },
+              msg: '服务器出错'
+            }
+            console.log('个人文章管理删除文章数据库语句出错')
+            pool.releaseConnection(connection)
+            reject(result)
+          } else {
+            pool.releaseConnection(connection)
+            result = sqlformatJSON.transforms(result)
+            // console.log(result)
+            result = {
+              code: '0',
+              data: {
+              },
+              msg: '删除成功'
+            }
+            resolve(result)
+          }
+        })
+      })
+    })
   }
 }
