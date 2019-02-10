@@ -43,5 +43,40 @@ module.exports = {
           jsonWrite.jsonWrite(res, err)
         })
     }
+  },
+  lookOneBook: function (req, res, next) {
+    var result = {}
+    var $token = req.cookies.token
+    // 获取用户传递参数
+    var $params = req.body.params
+    if (!$token) {
+      result = {
+        // 40表未登录
+        code: '40',
+        data: {
+        },
+        msg: '用户未登录'
+      }
+      jsonWrite.jsonWrite(res, result)
+    } else {
+      var bookusername = $params.bookusername
+      var booktitle = $params.booktitle
+      var bookTF = $params.bookTF
+      getPersonBook.lookOneBook(bookusername, booktitle, bookTF)
+        .then((json) => {
+          result = {
+            // 40表未登录
+            code: '0',
+            data: {
+              data: json
+            },
+            msg: '获取成功'
+          }
+          jsonWrite.jsonWrite(res, result)
+        })
+        .catch((err) => {
+          jsonWrite.jsonWrite(res, err)
+        })
+    }
   }
 }

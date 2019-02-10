@@ -5,6 +5,7 @@ import register from '../views/Register'
 import findPWD from '../views/FindPWD'
 import writeNewComment from '../views/writeNewComment'
 import userCenter from '../views/userCenter'
+import lookArticle from '../views/lookArticle'
 import allArticleControl from '../views/FirstNav/allArticleControl'
 import changePersonInfo from '../views/FirstNav/changePersonInfo'
 import mySelfArticle from '../views/FirstNav/mySelfArticle'
@@ -39,6 +40,12 @@ export default new Router({
       name: '/writeNewComment',
       hidden: true,
       component: writeNewComment
+    },
+    {
+      path: '/lookArticle',
+      name: '/lookArticle',
+      hidden: true,
+      component: lookArticle
     },
     {
       path: '/userCenter',

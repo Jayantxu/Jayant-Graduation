@@ -52,7 +52,9 @@ var sqlMap = {
     deletePersonAllLSBook: 'delete from lsarticle where username = ? and title = ?'
   },
   newArticle: {
-    getOneBook: 'select title, content, fileLocation from lsarticle where username = ? and title = ?'
+    getOneBook: 'select title, content, fileLocation from lsarticle where username = ? and title = ?',
+    lookOneBook: 'select username, title, content, fileLocation, commitTime from article where username = ? and title = ?',
+    lookLSOneBook: 'select username, title, content, fileLocation, commitTime from lsarticle where username = ? and title = ?'
   }
 }
 module.exports = sqlMap

@@ -13,7 +13,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">
+            <el-button size="mini" @click="lookArticle(scope.$index, scope.row)">
               查看
             </el-button>
             <el-button size="mini" type="danger" @click="DeleteBookMessage(scope.$index, scope.row)">
@@ -64,6 +64,12 @@ export default {
       }).catch(() => {
         console.log('取消删除')
       })
+    },
+    // 查看按钮
+    lookArticle (index, row) {
+      var bookusername = row.username
+      var booktitle = row.title
+      window.open(`/lookArticle?bookusername=${bookusername}&booktitle=${booktitle}&ls=false`)
     },
     DeleteBook (index, row) {
       this.$http.post('/api/userCenter/deletePersonBook', {

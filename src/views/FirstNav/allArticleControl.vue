@@ -13,7 +13,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">
+            <el-button size="mini" @click="lookArticle(scope.$index, scope.row)">
               查看
             </el-button>
             <el-button size="mini" type="danger" @click="deleteUserBookALLMessage(scope.$index, scope.row)">
@@ -41,6 +41,12 @@ export default {
     }
   },
   methods: {
+    // 文章查看
+    lookArticle (index, row) {
+      var bookusername = row.username
+      var booktitle = row.title
+      window.open(`/lookArticle?bookusername=${bookusername}&booktitle=${booktitle}&ls=false`)
+    },
     // 转换附件的显示
     formatHasFile (row, column) {
       return row.fileLocation ? row.fileLocation : '无'

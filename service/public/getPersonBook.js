@@ -41,5 +41,40 @@ module.exports = {
         })
       })
     })
+  },
+  lookOneBook: function (bookusername, booktitle, bookTF) {
+    return new Promise(function (resolve, reject) {
+      pool.getConnection(function (err, connection) {
+        var result = {}
+        if (err) {
+          result = {
+            code: '1',
+            data: {
+            },
+            msg: '服务器出错'
+          }
+          console.log('查看书籍数据库连接错误')
+          reject(result)
+        }
+        var str = bookTF === 'false' ? $sql.newArticle.lookOneBook : $sql.newArticle.lookLSOneBook
+        connection.query(str, [bookusername, booktitle], (err, result) => {
+          if (err) {
+            result = {
+              code: '1',
+              data: {
+              },
+              msg: '服务器出错'
+            }
+            console.log('查看书籍数据库语句出错')
+            pool.releaseConnection(connection)
+            reject(result)
+          } else {
+            pool.releaseConnection(connection)
+            result = sqlformatJSON.transforms(result)
+            resolve(result)
+          }
+        })
+      })
+    })
   }
 }
