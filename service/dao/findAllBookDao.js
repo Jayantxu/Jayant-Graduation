@@ -290,7 +290,6 @@ module.exports = {
       var username = $params.username
       var nowPage = $params.nowpage
       var bool = $params.bool
-      console.log('进入查找')
       // 去寻找用户密保答案是否正确
       getBook.getPersonBookNum(bool, username)
         .then((json) => {

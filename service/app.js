@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser')
 const userPlay = require('./routes/userPlay')
 const articleChange = require('./routes/articleChange')
 const userCenter = require('./routes/userCenter')
+const bookControl = require('./routes/bookControl')
+const downloadFile = require('./routes/downloadFile')
 const bodyParser = require('body-parser')
 app.use(cookieParser())
 app.use(bodyParser.json())
@@ -30,3 +32,7 @@ app.use('/api/user', userPlay)
 app.use('/api/article', articleChange)
 // 用户中心
 app.use('/api/userCenter', userCenter)
+// 继续编辑
+app.use('/api/aboutbook', bookControl)
+// 文件下载
+app.use('/api/download', downloadFile)

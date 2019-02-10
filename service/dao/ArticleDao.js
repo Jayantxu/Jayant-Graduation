@@ -32,7 +32,14 @@ var commitToSql = function (req, res, $params, locationPath) {
     if (err) {
       throw new Error('用户新文章数据库连接出错')
     }
-    connection.query($sql.article.newArticle, [$params.username, $params.articleTitle, $params.articleContent, locationPath, commitData], function (err, result) {
+    // 利用中间变量转换
+    // console.log($params.second)
+    // console.log(typeof ($params.second))
+    // second的标识，为true为二次编辑，false为初次提交，更新与新建记录的区别
+    var str = $params.second === 'false' ? $sql.article.newArticle : $sql.article.secondeArticle
+    var arr = $params.second === 'false' ? [$params.username, $params.articleTitle, $params.articleContent, locationPath, commitData] : [$params.articleContent, $params.oldFile, commitData, $params.username, $params.articleTitle]
+    // console.log(`sql语句：-->${str}`)
+    connection.query(str, arr, function (err, result) {
       if (err) {
         result = {
           code: '1',
@@ -84,7 +91,7 @@ module.exports = {
         // fields存放json数据，files存放的是文件信息
         files.field = field
         var $params = files.field
-        console.log($params.username)
+        // console.log($params.username)
         var $Xtoken = tokenFun.decodeToken($token, $params.username)
         if (!$Xtoken.bool) {
           // 用户名与token信息不一致的情况
@@ -100,6 +107,8 @@ module.exports = {
           // // fields存放json数据，files存放的是文件信息
           // 存目录
           var newpath
+          // console.log('测试图片')
+          // console.log($params)
           if (files.file) {
             console.log(files.file.path)
             let oldpath = path.join(files.file.path)

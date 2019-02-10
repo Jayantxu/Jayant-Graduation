@@ -7,13 +7,15 @@
         </el-table-column>
         <el-table-column prop="title" label="标题" width="230">
         </el-table-column>
-        <el-table-column prop="username" label="作者" width="200">
+        <el-table-column prop="username" label="作者" width="150">
         </el-table-column>
-        <el-table-column prop="fileLocation" label="附件" width="220" :formatter="formatHasFile">
+        <el-table-column prop="fileLocation" label="附件" width="150" :formatter="formatHasFile">
+        </el-table-column>
+        <el-table-column prop="bookstatus" label="附件" width="160" :formatter="formatStatus">
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">
+            <el-button size="mini" @click="EditLSBook(scope.$index, scope.row)">
               编辑
             </el-button>
             <el-button size="mini" type="danger" @click="DeleteBookMessage(scope.$index, scope.row)">
@@ -23,7 +25,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <pagination class="mt20" @sendNowPageToFather="getNowPagefromChild"></pagination>
+    <pagination class="mt20" :parentTotalNum="totalUserNum" @sendNowPageToFather="getNowPagefromChild"></pagination>
   </div>
 </template>
 <script>
@@ -52,6 +54,11 @@ export default {
     // 转换附件
     formatHasFile (row, column) {
       return row.fileLocation ? row.fileLocation : '无'
+    },
+    // 状态的转换
+    formatStatus (row, column) {
+      // console.log(row)
+      return row.bookstatus === '0' ? '未审核' : row.bookstatus === '1' ? '审核通过' : '审核不通过'
     },
     // 删除书籍
     DeleteBookMessage (index, row) {
@@ -83,6 +90,11 @@ export default {
       }).catch((err) => {
         this.$message.error(err)
       })
+    },
+    EditLSBook (index, row) {
+      var bookusername = row.username
+      var booktitle = row.title
+      window.open(`/writeNewComment?bookusername=${bookusername}&booktitle=${booktitle}`)
     },
     // 获取分页组件的页数
     getNowPagefromChild (nowpage) {

@@ -15,7 +15,8 @@ var sqlMap = {
     loginIn: 'select password from userinfo where username = ?'
   },
   article: {
-    newArticle: 'insert into lsarticle (username, title, content, fileLocation, commitTime, bookstatus) values (?,?,?,?,?,0)'
+    newArticle: 'insert into lsarticle (username, title, content, fileLocation, commitTime, bookstatus) values (?,?,?,?,?,0)',
+    secondeArticle: 'update lsarticle SET content = ?, fileLocation = ?, commitTime = ?, bookstatus = 0 where username = ? and title = ?'
   },
   Permission: {
     check: 'select permission from userinfo where username = ?'
@@ -49,6 +50,9 @@ var sqlMap = {
     getPersonAllLSBook: 'select commitTime,title,username,fileLocation,bookstatus from lsarticle where username = ? limit ?,10',
     deletePersonAllBook: 'delete from article where username = ? and title = ?',
     deletePersonAllLSBook: 'delete from lsarticle where username = ? and title = ?'
+  },
+  newArticle: {
+    getOneBook: 'select title, content, fileLocation from lsarticle where username = ? and title = ?'
   }
 }
 module.exports = sqlMap

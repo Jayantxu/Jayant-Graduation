@@ -23,8 +23,12 @@
           <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button> -->
           <div slot="tip" class="el-upload__tip">只能上传jpg、pdf、doc文件，且不超过5MB</div>
         </el-upload>
+        <div class="mt10" v-show="hasdownloadFile">
+          <span>已上传文件:</span>
+          <a :href="downloadUrl" :download="downloadFile">{{filenameD}}</a>
+        </div>
       </div>
-      <div class="mt15 btn-l20">
+      <div class="mt10 btn-l20">
         <el-button type="warning" round @click="clearDialog = true">重置编辑框</el-button>
         <el-button type="primary" round  @click="commitContent('ruleEditor')">提交</el-button>
       </div>
@@ -53,8 +57,36 @@ export default {
   name: 'editor',
   components: {
   },
+  props: ['fatherTitle', 'fathercontent', 'fatherLoca', 'fathergetFile'],
+  watch: {
+    'fatherTitle': function () {
+      this.ruleEditor.commentTitle = this.fatherTitle
+    },
+    'fathercontent': function () {
+      console.log(this.fathercontent)
+      this.editorObj.txt.html(this.fathercontent)
+    },
+    'fatherLoca': function () {
+      if (this.fatherLoca) {
+        this.filenameD = this.fatherLoca.split('\\')[1]
+        this.hasdownloadFile = true
+        this.downloadFile = this.filenameD
+        this.downloadUrl = `http://localhost:3000/api/download/File?fileName=${this.filenameD}`
+      } else {
+        this.hasdownloadFile = false
+      }
+    },
+    'fathergetFile': function () {
+      this.getFile = this.fathergetFile
+    }
+  },
   data () {
     return {
+      getFile: false,
+      hasdownloadFile: false,
+      filenameD: '',
+      downloadUrl: '',
+      downloadFile: '',
       uploading: false,
       editorObj: '',
       editorContenthtml: '',
@@ -104,18 +136,19 @@ export default {
     beforeAvatarUpload (file) {
       var fileType = file.name.substring(file.name.lastIndexOf('.') + 1)
       console.log(fileType)
-      const isJPG = fileType === 'image/jpeg'
+      const isJPG = fileType === 'jpg'
       const iswordx = fileType === 'docx'
       const isword = fileType === 'doc'
       const ispdf = fileType === 'pdf'
+      const ispng = fileType === 'png'
       const isLt5M = file.size / 1024 / 1024 < 5
-      if (!isJPG && !isword && !ispdf && !iswordx) {
-        this.$message.error('上传只能是 JPG、doc、pdf 格式!')
+      if (!isJPG && !isword && !ispdf && !iswordx && !ispng) {
+        this.$message.error('上传只能是 jpg、png、doc、pdf 格式!')
       }
       if (!isLt5M) {
         this.$message.error('上传图片大小不能超过 5MB!')
       }
-      return (isJPG || isword || ispdf || iswordx) && isLt5M
+      return (isJPG || isword || ispdf || iswordx || ispng) && isLt5M
     },
     /*  以上上传文件相关  */
     clearEditor: function () {
@@ -141,6 +174,16 @@ export default {
       if (params) {
         const _file = params.file
         formData.append('file', _file)
+      }
+      if (this.getFile) {
+        formData.append('second', true)
+      }
+      if (!this.getFile) {
+        formData.append('second', false)
+      }
+      if (this.hasdownloadFile) {
+        // 记录原始旧文件
+        formData.append('oldFile', this.fatherLoca)
       }
       formData.append('articleTitle', this.ruleEditor.commentTitle)
       formData.append('articleContent', this.editorContenthtml)
@@ -196,7 +239,7 @@ export default {
     //     return content + '<p>在粘贴内容后面追加一行</p>'
     // }
     // 下面两个配置，使用其中一个即可显示“上传图片”的tab。但是两者不要同时使用！！！
-    editor.customConfig.uploadImgShowBase64 = true // 使用 base64 保存图片
+    // editor.customConfig.uploadImgShowBase64 = true // 使用 base64 保存图片
     // editor.customConfig.uploadImgServer = '/upload'上传图片到服务器
     // 隐藏“网络图片”tab
     editor.customConfig.showLinkImg = false
