@@ -232,6 +232,7 @@ export default {
         width: 100%;
         top: 0;
         position: fixed;
+        z-index: 2
     }
     .el-col {
         border-radius: 0.01rem;

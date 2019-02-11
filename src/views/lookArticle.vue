@@ -4,7 +4,10 @@
     <div class="main">
       <div class="header-title font40">{{gettitle}}</div>
       <div class="header-time mt10 font18">作者：{{getusername}} 发布时间：{{getCommitTime}}</div>
-      <div class="header-filename mt10" v-show="fileshow"></div>
+      <div class="header-filename mt10 font16" v-show="fileshow">
+        <span>文件：{{getLoca}}</span>
+        <a :href="downloadUrl" :download="getLoca">[下载]</a>
+      </div>
       <div class="header-content mt10 font16 text-left" id="contentBorder"></div>
     </div>
   </div>
@@ -27,7 +30,8 @@ export default {
       getCommitTime: '',
       getusername: '',
       getLoca: '',
-      fileshow: false
+      fileshow: false,
+      downloadUrl: ''
     }
   },
   methods: {
@@ -47,11 +51,12 @@ export default {
         } else {
           this.gettitle = jsondata.title // 发布书籍的标题
           this.getcontent = jsondata.content // 发布书籍的内容
-          this.getLoca = jsondata.fileLocation // 发布书籍的文件
           this.getCommitTime = jsondata.commitTime
           this.getusername = jsondata.username
           if (jsondata.fileLocation) {
             this.fileshow = true
+            this.getLoca = jsondata.fileLocation.split('\\')[1]
+            this.downloadUrl = `http://localhost:3000/api/download/File?fileName=${this.getLoca}`
           }
         }
       }).catch((err) => {
@@ -80,7 +85,7 @@ export default {
     left: 10%;
     height: auto;
     position: absolute;
-    z-index:-1
+    z-index:0
   }
   .header-title {
     width: 80vw;
@@ -95,7 +100,6 @@ export default {
   .header-filename {
     width: 80vw;
     height: 0.4rem;
-    background-color: red;
   }
   .header-content {
     width: 80vw;
