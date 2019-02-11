@@ -55,6 +55,9 @@ var sqlMap = {
     getOneBook: 'select title, content, fileLocation from lsarticle where username = ? and title = ?',
     lookOneBook: 'select username, title, content, fileLocation, commitTime from article where username = ? and title = ?',
     lookLSOneBook: 'select username, title, content, fileLocation, commitTime from lsarticle where username = ? and title = ?'
+  },
+  search: {
+    keyWord: 'select title,username from article where title LIKE \'%?%\' OR username LIKE \'%?%\''
   }
 }
 module.exports = sqlMap

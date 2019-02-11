@@ -4,8 +4,8 @@
         <el-container>
           <el-main class="font22" v-loading="mainLoading">
             <ul class="main_ul">
-              <li v-for="(item, index) in homedata" @click="lookArticle(item)" :key="index" class="mt10 li_box text-left">
-                <div class="contentBox">
+              <li v-for="(item, index) in homedata" :key="index" class="mt10 li_box text-left">
+                <div class="contentBox"  @click="lookArticle(item)">
                   <div class="font24">{{item.title}}</div>
                   <div class="font16 mt15 ml5">
                     <span>{{item.username}}</span>

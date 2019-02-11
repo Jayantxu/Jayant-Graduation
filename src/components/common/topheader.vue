@@ -16,8 +16,23 @@
                 <!-- 搜索框 -->
                 <el-col :xs="7" :sm="7" :md="6" :lg="6" :xl="8">
                     <div class="col-content font22 mt10">
-                        <el-input style="width:70%;" placeholder="请输入相关书名" suffix-icon="el-icon-search">
-                        </el-input>
+                        <el-select
+                          v-model="searchValue"
+                          filterable
+                          remote
+                          placeholder="请输入相关文章"
+                          :remote-method="remotesearchMethod"
+                          :loading="searchloading"
+                          style="width:70%;"
+                          @change="lookArticle">
+                          <el-option
+                            v-for="item in searchResult"
+                            :key="item.title+' '+item.username"
+                            :label="item.title+' '+item.username"
+                            :value="item.title+' '+item.username"
+                            >
+                          </el-option>
+                        </el-select>
                     </div>
                 </el-col>
                 <!-- 撑位置用 -->
@@ -85,6 +100,11 @@ export default {
   name: 'topheader',
   data () {
     return {
+      //搜索的value
+      searchValue: [],
+      searchloading: false,
+      // 搜索结果
+      searchResult: [],
       isLogin: false,
       // 记录登录的用户名
       DLusername: '',
@@ -112,6 +132,40 @@ export default {
     // }
   },
   methods: {
+    //  搜索框点击后的响应
+    //  查看文章
+    lookArticle () {
+      var bookusername = this.searchValue.split(' ')[1]
+      var booktitle = this.searchValue.split(' ')[0]
+      console.log(`${bookusername}${booktitle}`)
+      window.open(`/lookArticle?bookusername=${bookusername}&booktitle=${booktitle}&ls=false`)
+    },
+    //  搜索框的搜索方法
+    remotesearchMethod (query) {
+      if (query !== '') {
+        this.searchloading = true
+        this.$http.post('/api/main/search', {
+          params: {
+            queryWord: query
+          }
+        })
+          .then((res) => {
+            var json = res.data
+            if(json.code !== '0') {
+              return Promise.reject(json.msg)
+            } else {
+              this.searchloading = false
+              this.searchResult = json.data.data
+              query = ''
+            }
+          })
+          .catch((err) => {
+            this.$message.error(err)
+          })
+      } else {
+        this.searchResult = []
+      }
+    },
     checkLogin: function () {
       this.isLogin = this.$store.state.isLogin
       this.DLusername = this.$store.state.DLusername
