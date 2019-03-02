@@ -7,6 +7,7 @@ const userCenter = require('./routes/userCenter')
 const bookControl = require('./routes/bookControl')
 const downloadFile = require('./routes/downloadFile')
 const mainBook = require('./routes/mainBook')
+const hotnewBook = require('./routes/hotnewBook')
 const bodyParser = require('body-parser')
 app.use(cookieParser())
 app.use(bodyParser.json())
@@ -39,3 +40,5 @@ app.use('/api/aboutbook', bookControl)
 app.use('/api/download', downloadFile)
 // 首页书籍
 app.use('/api/main', mainBook)
+// 首页加载热门、新书
+app.use('/api/hotNewBook', hotnewBook)

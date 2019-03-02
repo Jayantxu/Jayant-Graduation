@@ -58,6 +58,14 @@ var sqlMap = {
   },
   search: {
     keyWord: 'select title,username from article where title LIKE \'%?%\' OR username LIKE \'%?%\''
+  },
+  HotBookTop: {
+    // 书籍热度加一
+    BookaddOneHot: 'INSERT bookrank (title, username, hotcount) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE hotcount = hotcount + 1'
+  },
+  // 首页获取新书、热门书
+  getNewHotBook: {
+    getHotBook: 'select title, username from bookrank order by hotcount desc limit 10'
   }
 }
 module.exports = sqlMap

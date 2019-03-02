@@ -8,6 +8,33 @@ var jsonWrite = require('../public/jsonWrite')
 var getPersonBook = require('../public/getPersonBook')
 // 使用连接池,提升性能
 var pool = mysql.createPool($conn.mysql)
+// 热榜+1功能
+var addHotBook = function (bookusername, booktitle) {
+  var addHotBookpromise = new Promise(function (resolve, reject) {
+    pool.getConnection(function (err, connection) {
+      var result = {}
+      if (err) {
+        console.log(`书籍热榜，图书热度加一数据库错误---addHotBook---error`)
+      }
+      connection.query($sql.HotBookTop.BookaddOneHot, [bookusername, booktitle], (err, result) => {
+        if (err) {
+          result = {
+            msg: '书籍热榜，图书热度加一错误---数据库语句错误'
+          }
+          pool.releaseConnection(connection)
+          reject(result)
+        } else {
+          result = {
+            msg: '书籍热度加一'
+          }
+          pool.releaseConnection(connection)
+          resolve(result)
+        }
+      })
+    })
+  })
+  return addHotBookpromise
+}
 module.exports = {
   getOneBook: function (req, res, next) {
     var result = {}
@@ -72,7 +99,15 @@ module.exports = {
             },
             msg: '获取成功'
           }
-          jsonWrite.jsonWrite(res, result)
+          // 记录书籍点击后的热度+,正式书籍的情况下,false的情况下就是正式书库
+          if (bookTF === 'false') {
+            addHotBook(bookusername, booktitle).then((json) => {
+              console.log(json.msg)
+            })
+            jsonWrite.jsonWrite(res, result)
+          } else {
+            jsonWrite.jsonWrite(res, result)
+          }
         })
         .catch((err) => {
           jsonWrite.jsonWrite(res, err)

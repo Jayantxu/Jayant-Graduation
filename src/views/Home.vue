@@ -27,6 +27,18 @@
             <div class="aside-notice mt15">
               <span class="font18">欢迎来到分享图书馆</span>
             </div>
+            <div class="aside-hotRank aside mt5">
+              <i class="icon iconfont icon-hot iconfont32">
+              </i>
+              <div class="clear font16" v-loading="hotBookLoading">
+              </div>
+            </div>
+            <div class="aside-newRank aside mt5">
+              <i class="icon iconfont icon-iconfontzhizuobiaozhun023113 iconfont32">
+              </i>
+              <div class="clear font16" v-loading="newBookLoading">
+              </div>
+            </div>
           </el-aside>
         </el-container>
     </div>
@@ -43,7 +55,11 @@ export default {
       addloading: false,
       refreshword: '点击刷新',
       mainLoading: false,
-      refreWWW: true
+      hotBookLoading: false, // 热门书籍加载loading
+      newBookLoading: false, // 新书籍加载loading
+      refreWWW: true,
+      hotBookRank: [], // 保存热门书籍
+      newBookRank: [] // 保存新书籍推荐
     }
   },
   components: {
@@ -51,7 +67,7 @@ export default {
   },
   methods: {
     refreshAdd () {
-      if ((this.page)*10 <= this.totalNum) {
+      if ((this.page) * 10 <= this.totalNum) {
         this.page = this.page + 1
         this.addloading = true
         this.refreWWW = false
@@ -90,10 +106,33 @@ export default {
         this.mainLoading = false
         this.$message.error(err)
       })
+    },
+    // 获取热门书籍
+    getHotBook () {
+      this.hotBookLoading = true
+      this.$http.get('/api/hotNewBook/getHotBook')
+        .then((res) => {
+          var json = res.data
+          if (json.code !== '0') {
+            return Promise.reject(json.msg)
+          } else {
+            this.hotBookRank = json.data
+            this.hotBookLoading = false
+          }
+        })
+        .catch((err) => {
+          this.hotBookLoading = false
+          console.log(err)
+        })
+    },
+    getNewBook () {
+      this.newBookLoading = true
     }
   },
   mounted () {
     this.getData(1)
+    this.getHotBook()
+    this.getNewBook()
   }
 }
 </script>
@@ -124,9 +163,27 @@ export default {
     border-left: 1px solid gray;
     position: fixed;
   }
+  .aside {
+    i {
+      float: left;
+    }
+    .clear {
+      clear: both;
+    }
+  }
   .aside-notice {
     width: 100%;
-    height:4rem;
+    height:2rem;
+  }
+  .aside-hotRank {
+    width: 100%;
+    height:1.5rem;
+    background-color: rgba(245, 200, 200, 0.3);
+  }
+  .aside-newRank {
+    width: 100%;
+    height:1.5rem;
+    background-color: rgba(221, 241, 235, 0.3);
   }
   ul {
     list-style: none;

@@ -100,7 +100,7 @@ export default {
   name: 'topheader',
   data () {
     return {
-      //搜索的value
+      // 搜索的value
       searchValue: [],
       searchloading: false,
       // 搜索结果
@@ -151,7 +151,7 @@ export default {
         })
           .then((res) => {
             var json = res.data
-            if(json.code !== '0') {
+            if (json.code !== '0') {
               return Promise.reject(json.msg)
             } else {
               this.searchloading = false
