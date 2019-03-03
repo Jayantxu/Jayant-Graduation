@@ -16,7 +16,7 @@ var addHotBook = function (bookusername, booktitle) {
       if (err) {
         console.log(`书籍热榜，图书热度加一数据库错误---addHotBook---error`)
       }
-      connection.query($sql.HotBookTop.BookaddOneHot, [bookusername, booktitle], (err, result) => {
+      connection.query($sql.HotBookTop.BookaddOneHot, [booktitle, bookusername], (err, result) => {
         if (err) {
           result = {
             msg: '书籍热榜，图书热度加一错误---数据库语句错误'

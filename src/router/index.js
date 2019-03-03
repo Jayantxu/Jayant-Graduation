@@ -11,6 +11,7 @@ import changePersonInfo from '../views/FirstNav/changePersonInfo'
 import mySelfArticle from '../views/FirstNav/mySelfArticle'
 import NewArticleControl from '../views/FirstNav/NewArticleControl'
 import permissionC from '../views/FirstNav/permissionC'
+import announce from '../views/FirstNav/announce'
 
 Vue.use(Router)
 
@@ -101,6 +102,12 @@ export default new Router({
           path: '/userCenter/permissionC',
           name: '权限配置中心',
           component: permissionC,
+          hidden: false
+        },
+        {
+          path: '/userCenter/announce',
+          name: '公告发布',
+          component: announce,
           hidden: false
         }
       ]

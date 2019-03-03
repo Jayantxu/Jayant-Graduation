@@ -65,7 +65,12 @@ var sqlMap = {
   },
   // 首页获取新书、热门书
   getNewHotBook: {
-    getHotBook: 'select title, username from bookrank order by hotcount desc limit 10'
+    getHotBook: 'select title, username from bookrank order by hotcount desc limit 10',
+    getNewBook: 'select title, username from article order by commitTime desc limit 10'
+  },
+  aboutAnnounce: {
+    commit: 'insert into announceTable (announce, commitTime, form) values (?,?,?)',
+    getNowA: 'select commitTime, form, announce from announceTable order by commitTime desc limit 1'
   }
 }
 module.exports = sqlMap

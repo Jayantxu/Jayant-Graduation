@@ -24,19 +24,35 @@
             </ul>
           </el-main>
           <el-aside class="main-right">
-            <div class="aside-notice mt15">
-              <span class="font18">欢迎来到分享图书馆</span>
+            <div class="aside-notice aside mt5">
+              <i class="icon iconfont icon-gonggao iconfont25"></i>
+              <div class="clear font14 mt10 annoMain">
+                <p style="margin-bottom: 5px;">
+                  {{NowAnnounce.announce}}
+                </p>
+                <div class="float-l" @click="lookMore">查看更多</div>
+              </div>
             </div>
             <div class="aside-hotRank aside mt5">
               <i class="icon iconfont icon-hot iconfont32">
               </i>
-              <div class="clear font16" v-loading="hotBookLoading">
+              <div class="clear font14 mt5" v-loading="hotBookLoading">
+                <div v-for="item in hotBookRank">
+                  <div v-for="(item2) in item" class="float-l ml15 mt5 aside-hotRankBookDiv" @click="lookArticle(item2)">
+                    {{item2.title}}
+                  </div>
+                </div>
               </div>
             </div>
             <div class="aside-newRank aside mt5">
               <i class="icon iconfont icon-iconfontzhizuobiaozhun023113 iconfont32">
               </i>
-              <div class="clear font16" v-loading="newBookLoading">
+              <div class="clear font14 mt5" v-loading="newBookLoading">
+                <div v-for="item in newBookRank">
+                  <div v-for="(item2) in item" class="float-l ml15 mt5 aside-NewRankBookDiv" @click="lookArticle(item2)">
+                    {{item2.title}}
+                  </div>
+                </div>
               </div>
             </div>
           </el-aside>
@@ -59,13 +75,29 @@ export default {
       newBookLoading: false, // 新书籍加载loading
       refreWWW: true,
       hotBookRank: [], // 保存热门书籍
-      newBookRank: [] // 保存新书籍推荐
+      newBookRank: [], // 保存新书籍推荐
+      NowAnnounce: ''
     }
   },
   components: {
     topheader
   },
   methods: {
+    lookMore () {
+      this.$notify({
+        title: '公告',
+        dangerouslyUseHTMLString: true,
+        message: 
+          `
+          <div>
+            ${this.NowAnnounce.announce}
+          </div>
+          <div class="float-r">${this.NowAnnounce.form}</div>
+          <div class="float-r clear">${this.NowAnnounce.commitTime.split('T')[0]}</div>
+          `,
+        duration: 0
+      });
+    },
     refreshAdd () {
       if ((this.page) * 10 <= this.totalNum) {
         this.page = this.page + 1
@@ -127,19 +159,64 @@ export default {
     },
     getNewBook () {
       this.newBookLoading = true
+      this.$http.get('/api/hotNewBook/getNewBook')
+        .then((res) => {
+          var json = res.data
+          if (json.code !== '0') {
+            return Promise.reject(json.msg)
+          } else {
+            this.newBookRank = json.data
+            this.newBookLoading = false
+          }
+        })
+        .catch((err) => {
+          this.newBookLoading = false
+          console.log(err)
+        })
+    },
+    getNowA () {
+      this.$http.get('/api/userCenter/nowAnnounce')
+        .then((res) => {
+          var json = res.data
+          if (json.code !== '0') {
+            return Promise.reject(json.msg)
+          } else {
+            this.NowAnnounce = json.data.anno[0]
+          }
+        })
+        .catch((err) => {
+          this.$message.error(err)
+        })
     }
   },
   mounted () {
     this.getData(1)
     this.getHotBook()
     this.getNewBook()
+    this.getNowA()
   }
 }
 </script>
 <style lang="scss">
+  .annoMain {
+    width: 90%;
+    height: 1.5rem;
+    p {
+      position: relative;
+      line-height: 20px;
+      max-height: 100px;
+      overflow: hidden;
+    }
+    div {
+      background: rgb(175, 175, 221);
+    &:hover {
+      cursor: pointer;
+    }
+    }
+  }
   .li_box {
     height: 1.2rem;
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid rgb(128, 128, 128);
     .contentBox {
       width: 60%;
       &:hover {
@@ -173,17 +250,33 @@ export default {
   }
   .aside-notice {
     width: 100%;
-    height:2rem;
+    height:1.6rem;
   }
   .aside-hotRank {
     width: 100%;
-    height:1.5rem;
+    height:1.8rem;
     background-color: rgba(245, 200, 200, 0.3);
   }
   .aside-newRank {
     width: 100%;
-    height:1.5rem;
+    height:1.8rem;
     background-color: rgba(221, 241, 235, 0.3);
+  }
+  .aside-hotRankBookDiv {
+    background: rgba(190, 213, 214, 0.1);
+    border: 1px solid blanchedalmond;
+    border-radius: 1px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  .aside-NewRankBookDiv {
+    background: rgba(150, 132, 138, 0.1);
+    border: 1px solid blanchedalmond;
+    border-radius: 1px;
+    &:hover {
+      cursor: pointer;
+    }
   }
   ul {
     list-style: none;

@@ -5,6 +5,7 @@ var findAllUserDao = require('../dao/findAllUserDao')
 var findAllBookDao = require('../dao/findAllBookDao')
 var changeUserpermissionDao = require('../dao/changeUserpermissionDao')
 var changUserPwdDao = require('../dao/changUserPwdDao')
+var AnnounceDao = require('../dao/AnnounceDao')
 // 检验用户是否登录
 router.post('/checkLogin', function (req, res, next) {
   checkLoginDao.checkLogin(req, res, next)
@@ -58,5 +59,11 @@ router.post('/personfindAllBook', function (req, res, next) {
 // 个人文章的删除操作
 router.post('/deletePersonBook', function (req, res, next) {
   findAllBookDao.deletePersonBook(req, res, next)
+})
+router.post('/newAnnounce', function (req, res, next) {
+  AnnounceDao.commitnewA(req, res, next)
+})
+router.get('/nowAnnounce', function (req, res, next) {
+  AnnounceDao.getNowA(req, res, next)
 })
 module.exports = router
