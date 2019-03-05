@@ -12,7 +12,7 @@ var sqlMap = {
   },
   // 登录sql语句
   login: {
-    loginIn: 'select password from userinfo where username = ?'
+    loginIn: 'select password, permission from userinfo where username = ?'
   },
   article: {
     newArticle: 'insert into lsarticle (username, title, content, fileLocation, commitTime, bookstatus) values (?,?,?,?,?,0)',

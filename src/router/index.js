@@ -53,20 +53,23 @@ export default new Router({
       name: '个人中心',
       component: userCenter,
       hidden: false,
+      routeMeta: '0,1,2',
       children: [
         // 用户中心侧边栏功能
         {
           path: '/userCenter/changePersonInfo',
           name: '个人信息修改',
           component: changePersonInfo,
-          hidden: false
+          hidden: false,
+          routeMeta: '0,1,2'
         },
         {
           path: '/userCenter/mySelfArticle',
           name: '个人文章管理',
           component: mySelfArticle,
           hidden: false,
-          hasSChild: true
+          hasSChild: true,
+          routeMeta: '0,1,2'
         }
       ]
     },
@@ -75,19 +78,22 @@ export default new Router({
       name: '管理员中心',
       component: userCenter,
       hidden: false,
+      routeMeta: '1,2',
       children: [
         // 用户中心侧边栏功能
         {
           path: '/userCenter/allArticleControl',
           name: '所有文章',
           component: allArticleControl,
-          hidden: false
+          hidden: false,
+          routeMeta: '1,2'
         },
         {
           path: '/userCenter/NewArticleControl',
           name: '新文章管理',
           component: NewArticleControl,
-          hidden: false
+          hidden: false,
+          routeMeta: '1,2'
         }
       ]
     },
@@ -96,19 +102,22 @@ export default new Router({
       name: '权限管理',
       component: userCenter,
       hidden: false,
+      routeMeta: '2',
       children: [
         // 用户中心侧边栏功能
         {
           path: '/userCenter/permissionC',
           name: '权限配置中心',
           component: permissionC,
-          hidden: false
+          hidden: false,
+          routeMeta: '2'
         },
         {
           path: '/userCenter/announce',
           name: '公告发布',
           component: announce,
-          hidden: false
+          hidden: false,
+          routeMeta: '2'
         }
       ]
     }

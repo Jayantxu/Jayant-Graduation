@@ -7,7 +7,7 @@
             <aside class="menu-expanded">
               <!--导航菜单-->
               <el-menu :default-active="$route.path" class="el-menu-vertical-demo" unique-opened router >
-                <div v-for="(item,index) in $router.options.routes" :key="index" v-if='!item.hidden'>
+                <div class="font16" v-for="(item,index) in $router.options.routes" :key="index" v-if='!item.hidden && (item.routeMeta.indexOf(userMeta) != -1)'>
                   <el-submenu :index="index+''" v-if="!item.leaf">
                     <template slot="title">
                       <i :class="item.iconCls"></i>
@@ -41,7 +41,8 @@ export default {
   },
   data () {
     return {
-      uploading: false
+      uploading: false,
+      userMeta: ''
     }
   },
   methods: {
@@ -68,6 +69,7 @@ export default {
           return Promise.reject(json.msg)
         } else {
           this.uploading = false
+          this.userMeta = this.$store.state.meta
         }
       }).catch((err) => {
         this.$message({

@@ -210,7 +210,8 @@ export default {
               })
               // 修改登录态保存至store中
               this.$store.commit('LoginIn', {
-                username: json.data.username
+                username: json.data.username,
+                userMeta: json.data.meta
               })
               // 记录该用户名
               this.DLusername = json.data.username

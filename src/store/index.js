@@ -15,7 +15,8 @@ const store = () => new Vuex.Store({
       'Q004': '你的出生地?'
     },
     isLogin: false,
-    DLusername: ''
+    DLusername: '',
+    meta: 0
   },
   getters: {
     // doneTodos: state => {
@@ -32,6 +33,7 @@ const store = () => new Vuex.Store({
     LoginIn (state, payload) {
       state.isLogin = !state.isLogin
       state.DLusername = payload.username
+      state.meta = payload.userMeta
     },
     LoginOut (state) {
       state.isLogin = !state.isLogin

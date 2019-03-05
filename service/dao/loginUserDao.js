@@ -43,6 +43,7 @@ module.exports = {
           // 将寻找到的密码与加密后进行匹配,并在此处处理token问题
           result = sqlformatJSON.transforms(result)
           var SQLpassword = result[0].password
+          var usermeta = result[0].permission
           // console.log(result[0].password)
           if ($params.password !== SQLpassword) {
             result = {
@@ -58,7 +59,8 @@ module.exports = {
               code: '0',
               data: {
                 username: $params.username,
-                Ctoken: Ctoken.token
+                Ctoken: Ctoken.token,
+                meta: usermeta
               },
               msg: '登录成功'
             }
