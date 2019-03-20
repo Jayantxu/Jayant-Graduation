@@ -14,13 +14,13 @@
                   <el-input v-model="registerRuleForm.username" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
-                  <el-input type="password" v-model="registerRuleForm.password" clearable></el-input>
+                  <el-input type="password" v-model="registerRuleForm.password" :disabled="isExist" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="确认密码" prop="doublepassword">
-                  <el-input type="password" v-model="registerRuleForm.doublepassword" clearable></el-input>
+                  <el-input type="password" v-model="registerRuleForm.doublepassword" :disabled="isExist" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="选择问题" prop="question">
-                  <el-select v-model="registerRuleForm.question" style="width:100%;" placeholder="请选择问题">
+                  <el-select v-model="registerRuleForm.question" style="width:100%;" :disabled="isExist" placeholder="请选择问题">
                     <el-option
                       v-for="item in Cquestion"
                       :key="item.value"
@@ -32,10 +32,10 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item label="回答" prop="answer">
-                  <el-input v-model="registerRuleForm.answer" clearable></el-input>
+                  <el-input v-model="registerRuleForm.answer" :disabled="isExist" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="submitForm('registerRuleForm')">注册</el-button>
+                  <el-button type="primary" @click="submitForm('registerRuleForm')" :disabled="isExist">注册</el-button>
                   <el-button @click="resetForm('registerRuleForm')">重置</el-button>
                 </el-form-item>
               </el-form>
@@ -66,7 +66,27 @@ export default {
         callback()
       }
     }
+    var validatorCheckUser = (rule, value, callback) => {
+      this.$http.post('/api/user/registerCheck', {
+        params: {
+          username: value
+        }
+      })
+        .then((res) => {
+          var json = res.data
+          if (json.code !== '0') {
+            return Promise.reject(json.msg)
+          } else {
+            this.isExist = false
+          }
+        })
+        .catch((err) => {
+          this.isExist = true
+          this.$message.error(err)
+        })
+    }
     return {
+      isExist: true,
       registerRuleForm: {
         username: '',
         password: '',
@@ -77,7 +97,8 @@ export default {
       rules: {
         username: [
           {required: true, message: '请输入用户名', trigger: 'blur'},
-          {min: 3, max: 10, message: '长度在3-10个字符', trigger: 'blur'}
+          {min: 3, max: 10, message: '长度在3-10个字符', trigger: 'blur'},
+          {validator: validatorCheckUser, trigger: 'blur'}
         ],
         password: [
           {required: true, message: '请输入密码', trigger: 'blur'},

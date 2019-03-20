@@ -11,7 +11,7 @@
         </el-table-column>
         <el-table-column prop="fileLocation" label="附件" width="150" :formatter="formatHasFile">
         </el-table-column>
-        <el-table-column prop="bookstatus" label="附件" width="160" :formatter="formatStatus">
+        <el-table-column prop="bookstatus" label="状态" width="160" :formatter="formatStatus">
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">

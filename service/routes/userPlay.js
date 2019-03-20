@@ -13,6 +13,10 @@ var loginUserDao = require('../dao/loginUserDao')
 router.post('/registeruser', function (req, res, next) {
   registerDao.add(req, res, next)
 })
+// 注册用户时检测是否存在
+router.post('/registerCheck', function (req, res, next) {
+  registerDao.checkIs(req, res, next)
+})
 // 修改密码
 router.get('/findQuestion', function (req, res, next) {
   findPWDDao.findQuestion(req, res, next)

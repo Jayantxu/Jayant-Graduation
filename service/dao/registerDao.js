@@ -3,6 +3,7 @@ var mysql = require('mysql')
 var $conn = require('../db/db')
 var $sql = require('../db/sqlMap')
 var changeTime = require('../public/changeTime')
+var login = require('../dao/loginUserDao')
 // 引入加解密处理方法
 var bcryptFun = require('../public/crypto')
 // 使用连接池,提升性能
@@ -57,5 +58,28 @@ module.exports = {
         }
       })
     })
+  },
+  checkIs: function (req, res, next) {
+    // 获取用户传递参数
+    var $params = req.body.params
+    var result
+    login.checkUserExist($params.username)
+      .then((json) => {
+        // 用户名存在--不能执行注册
+        result = {
+          code: '1',
+          msg: '用户已存在，请更换用户名'
+        }
+        jsonWrite(res, result)
+      })
+      .catch((err) => {
+        // 用户名不存在--可以注册
+        result = {
+          code: '0',
+          msg: '用户可注册'
+        }
+        jsonWrite(res, result)
+        console.log(`注册:${err}`)
+      })
   }
 }
