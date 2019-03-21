@@ -73,7 +73,8 @@ export default {
     font-size: 16px;
     top: 1rem;
     width: 100%;
-    position: fixed;
+    position: absolute;
+    overflow: auto;
     z-index:0
   }
 </style>

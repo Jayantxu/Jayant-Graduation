@@ -16,8 +16,8 @@ var sqlMap = {
     findUserExist: 'select count(*) as num from userinfo where username = ?'
   },
   article: {
-    newArticle: 'insert into lsarticle (username, title, content, fileLocation, commitTime, bookstatus) values (?,?,?,?,?,0)',
-    secondeArticle: 'update lsarticle SET content = ?, fileLocation = ?, commitTime = ?, bookstatus = 0 where username = ? and title = ?'
+    newArticle: 'insert into lsarticle (username, title, content, fileLocation, commitTime, bookstatus, booktype) values (?,?,?,?,?,0,?)',
+    secondeArticle: 'update lsarticle SET content = ?, fileLocation = ?, commitTime = ?, bookstatus = 0, booktype = ? where username = ? and title = ?'
   },
   Permission: {
     check: 'select permission from userinfo where username = ?'
@@ -74,7 +74,8 @@ var sqlMap = {
     getNowA: 'select commitTime, form, announce from announceTable order by commitTime desc limit 1'
   },
   bookType: {
-    getBookTypes: 'select * from typeLeixing'
+    getBookTypes: 'select * from typeLeixing',
+    setBookTypes: 'insert into typeleixing (type) values (?)'
   }
 }
 module.exports = sqlMap

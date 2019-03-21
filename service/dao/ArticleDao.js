@@ -24,7 +24,70 @@ var jsonWrite = function (res, ret) {
     res.json(ret)
   }
 }
-var commitToSql = function (req, res, $params, locationPath) {
+var setBookType = function ($booktype) {
+  var str = ''
+  var len = $booktype.split(',').length
+  if (len > 0) {
+    str += '(?)'
+    for (var i = 0; i < len - 1; i++) {
+      str += `,(?)`
+    }
+  }
+  var setBookTypepromise = new Promise(function (resolve, reject) {
+    pool.getConnection(function (err, connection) {
+      if (err) {
+        console.log(`写入图书分类错误---setBookType---error`)
+      }
+      var sqlStr = `insert into typeleixing (type) values ${str}`
+      connection.query(sqlStr, $booktype.split(','), (err, result) => {
+        if (err) {
+          result = {
+            code: '1',
+            data: {
+            },
+            msg: '写入图书分类错误'
+          }
+          pool.releaseConnection(connection)
+          console.log('写入图书分类错误---数据库语句错误----')
+          reject(result)
+        } else {
+          result = sqlformatJSON.transforms(result)
+          // 受影响行数
+          var affectedRows = result.affectedRows
+          var insertId = result.insertId
+          var arr = [] // 记录下行ID
+          for (var i = 0; i < affectedRows; i++) {
+            arr.push(insertId += i)
+          }
+          resolve(arr)
+          pool.releaseConnection(connection)
+        }
+      })
+    })
+  })
+  return setBookTypepromise
+}
+var setBookToSql = function (req, res, $params, locationPath, trr) {
+  var endArr = ''
+  if (trr) {
+    var arr2 = $params.bookType1.split(',')
+    // 将选择的书籍类别迭代进分类数组
+    if (trr.concat(arr2).length > 0) {
+      endArr = trr.concat(arr2).toString()
+    } else {
+      endArr = '1'
+    }
+  } else {
+    // 将选择的书籍类别迭代进分类数组
+    if ($params.bookType1.split(',').length > 0) {
+      endArr = $params.bookType1.split(',').toString()
+    } else {
+      endArr = '1'
+    }
+  }
+  if (!endArr) {
+    endArr = '1'
+  }
   // 提交时间戳,用户名，标题，内容
   var commitData = changeTime.toSqlTime() // 转指定格式时间
   // console.log(`${commitData}+${username}+${title}+${content}`)
@@ -33,12 +96,10 @@ var commitToSql = function (req, res, $params, locationPath) {
       throw new Error('用户新文章数据库连接出错')
     }
     // 利用中间变量转换
-    // console.log($params.second)
-    // console.log(typeof ($params.second))
     // second的标识，为true为二次编辑，false为初次提交，更新与新建记录的区别
     var str = $params.second === 'false' ? $sql.article.newArticle : $sql.article.secondeArticle
-    var arr = $params.second === 'false' ? [$params.username, $params.articleTitle, $params.articleContent, locationPath, commitData] : [$params.articleContent, $params.oldFile, commitData, $params.username, $params.articleTitle]
-    // console.log(`sql语句：-->${str}`)
+    var arr = $params.second === 'false' ? [$params.username, $params.articleTitle, $params.articleContent, locationPath, commitData, endArr] : [$params.articleContent, $params.oldFile, commitData, endArr, $params.username, $params.articleTitle]
+    // 需要先将分类提交一遍至分类表
     connection.query(str, arr, function (err, result) {
       if (err) {
         result = {
@@ -53,21 +114,37 @@ var commitToSql = function (req, res, $params, locationPath) {
         pool.releaseConnection(connection)
         console.log(err)
         // throw new Error('用户新增新文章数据库语句出错')
+      } else {
+        // result = sqlformatJSON.transforms(result)
+        result = {
+          // 40表未登录
+          code: '0',
+          data: {
+            commitTime: commitData,
+            username: $params.username
+          },
+          msg: '成功提交，请等待管理员审核，2秒后将跳转主页'
+        }
+        jsonWrite(res, result)
+        pool.releaseConnection(connection)
       }
-      // result = sqlformatJSON.transforms(result)
-      result = {
-        // 40表未登录
-        code: '0',
-        data: {
-          commitTime: commitData,
-          username: $params.username
-        },
-        msg: '成功提交，请等待管理员审核，2秒后将跳转主页'
-      }
-      jsonWrite(res, result)
-      pool.releaseConnection(connection)
     })
   })
+}
+var commitToSql = function (req, res, $params, locationPath) {
+  if ($params.bookType2) {
+    setBookType($params.bookType2)
+      .then((json) => {
+        // 保存完书籍的分类，接下去保存详细信息
+        // json 是新分类的ID
+        setBookToSql(req, res, $params, locationPath, json)
+      })
+      .catch((err) => {
+        jsonWrite(res, err)
+      })
+  } else {
+    setBookToSql(req, res, $params, locationPath)
+  }
 }
 module.exports = {
   commitNewArticle: function (req, res, next) {

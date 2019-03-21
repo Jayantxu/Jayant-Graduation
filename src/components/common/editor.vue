@@ -28,6 +28,23 @@
           <a :href="downloadUrl" :download="downloadFile">{{filenameD}}</a>
         </div>
       </div>
+      <p class="font14 float-l">书籍分类：(限3种)</p>
+      <!-- 书籍分类的Tag -->
+      <div class="bookTypeTag mt10 mb5">
+        <div class="float-l vw30">
+          <el-select style="width:70%;"  v-model="chooseBooktype" multiple :multiple-limit="BookTypeNum" placeholder="请选择">
+            <el-option
+              v-for="item in bookTypeState"
+              :key="item.typeID"
+              :label="item.type"
+              :value="item.typeID">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="float-l vw30">
+          <el-input v-model="chooseBooktype2" placeholder="输入自定分类（、）分隔"></el-input>
+        </div>
+      </div>
       <div class="mt10 btn-l20">
         <el-button type="warning" round @click="clearDialog = true">重置编辑框</el-button>
         <el-button type="primary" round  @click="commitContent('ruleEditor')">提交</el-button>
@@ -53,6 +70,7 @@
 
 <script>
 import E from 'wangeditor'
+import getBookType from '../../assets/JS/getBookType'
 export default {
   name: 'editor',
   components: {
@@ -78,11 +96,31 @@ export default {
     },
     'fathergetFile': function () {
       this.getFile = this.fathergetFile
-    }
+    },
+    'chooseBooktype': function () {
+      // 下拉框的逻辑-满了三个不可选，如果键盘输入了三个，则option中不可选
+      if (this.chooseBooktype2array.length + this.chooseBooktype.length >= 4) {
+        this.$message.error('不可高于三种书籍分类')
+      }
+    },
+    'chooseBooktype2': function () {
+      this.chooseBooktype2array = this.chooseBooktype2.split('、')
+      if (this.chooseBooktype2array.length + this.chooseBooktype.length >= 4) {
+        this.$message.error('不可高于三种书籍分类')
+      }
+    },
   },
   data () {
     return {
       getFile: false,
+      // store中的type
+      bookTypeState: [],
+      // 下拉框选择的书籍type
+      chooseBooktype: [],
+      BookTypeNum: 3,
+      // 输入的书籍type
+      chooseBooktype2: '',
+      chooseBooktype2array: [],
       hasdownloadFile: false,
       filenameD: '',
       downloadUrl: '',
@@ -109,6 +147,10 @@ export default {
   methods: {
     /*  以下上传文件相关  */
     submitUpload () {
+      if (this.chooseBooktype2array.length + this.chooseBooktype.length >= 4) {
+        this.$message.error('书籍分类不可超过三种')
+        return false
+      }
       if (this.hasFile) {
         this.$refs.upload.submit()
       } else {
@@ -188,6 +230,8 @@ export default {
       formData.append('articleTitle', this.ruleEditor.commentTitle)
       formData.append('articleContent', this.editorContenthtml)
       formData.append('username', this.$store.state.DLusername)
+      formData.append('bookType1', this.chooseBooktype)
+      formData.append('bookType2', this.chooseBooktype2array)
       console.log(formData.get('uploadData'))
       // 配置header
       var config = {
@@ -246,8 +290,15 @@ export default {
     editor.customConfig.zIndex = 0
     this.editorObj.create()
     // editor.txt.html('记录您的新书评...')
+    getBookType.getBookTypeFun(this)
+    // 获取store中的booktype
+    this.bookTypeState = this.$store.state.bookType
   }
 }
 </script>
 <style scoped lang="scss">
+  .bookTypeTag {
+    height: 0.5rem;
+    width: 100%;
+  }
 </style>
