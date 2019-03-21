@@ -54,8 +54,8 @@ var sqlMap = {
   },
   newArticle: {
     getOneBook: 'select title, content, fileLocation from lsarticle where username = ? and title = ?',
-    lookOneBook: 'select username, title, content, fileLocation, commitTime from article where username = ? and title = ?',
-    lookLSOneBook: 'select username, title, content, fileLocation, commitTime from lsarticle where username = ? and title = ?'
+    lookOneBook: 'select username, title, content, fileLocation, commitTime, booktype from article where username = ? and title = ?',
+    lookLSOneBook: 'select username, title, content, fileLocation, commitTime, booktype from lsarticle where username = ? and title = ?'
   },
   search: {
     keyWord: 'select title,username from article where title LIKE \'%?%\' OR username LIKE \'%?%\''
@@ -72,6 +72,9 @@ var sqlMap = {
   aboutAnnounce: {
     commit: 'insert into announceTable (announce, commitTime, form) values (?,?,?)',
     getNowA: 'select commitTime, form, announce from announceTable order by commitTime desc limit 1'
+  },
+  bookType: {
+    getBookTypes: 'select * from typeLeixing'
   }
 }
 module.exports = sqlMap

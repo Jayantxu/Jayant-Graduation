@@ -232,3 +232,10 @@ html {
 .clear {
     clear: both;
 }
+// 悬浮与点击
+.hoverClick {
+    &:hover {
+        cursor: pointer;
+        border-bottom: 1px solid #3e62e0;
+    }
+}

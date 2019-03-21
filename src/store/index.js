@@ -16,7 +16,8 @@ const store = () => new Vuex.Store({
     },
     isLogin: false,
     DLusername: '',
-    meta: 0
+    meta: 0,
+    bookType: []
   },
   getters: {
     // doneTodos: state => {
@@ -37,6 +38,9 @@ const store = () => new Vuex.Store({
     },
     LoginOut (state) {
       state.isLogin = !state.isLogin
+    },
+    PutInBookType (state, payload) {
+      state.bookType = payload.bookType
     }
     // decrement (state, payload) {
     //   state.counter -= payload.amount

@@ -3,6 +3,7 @@
         <topheader></topheader>
         <el-container>
           <el-main class="font22" v-loading="mainLoading">
+            <div class="float-r font16 hoverClick" @click='returnTypeArticle'>按类型查看</div>
             <ul class="main_ul">
               <li v-for="(item, index) in homedata" :key="index" class="mt10 li_box text-left">
                 <div class="contentBox"  @click="lookArticle(item)">
@@ -61,6 +62,7 @@
 </template>
 <script>
 import topheader from '../components/common/topheader'
+import getBookType from '../assets/JS/getBookType'
 export default {
   name: 'Home',
   data () {
@@ -83,11 +85,15 @@ export default {
     topheader
   },
   methods: {
+    // 跳转类型分类
+    returnTypeArticle () {
+      location.href = '/typeArticle'
+    },
     lookMore () {
       this.$notify({
         title: '公告',
         dangerouslyUseHTMLString: true,
-        message: 
+        message:
           `
           <div>
             ${this.NowAnnounce.announce}
@@ -96,7 +102,7 @@ export default {
           <div class="float-r clear">${this.NowAnnounce.commitTime.split('T')[0]}</div>
           `,
         duration: 0
-      });
+      })
     },
     refreshAdd () {
       if ((this.page) * 10 <= this.totalNum) {
@@ -194,6 +200,7 @@ export default {
     this.getHotBook()
     this.getNewBook()
     this.getNowA()
+    getBookType.getBookTypeFun(this)
   }
 }
 </script>

@@ -34,7 +34,7 @@
         </el-col>
       </el-row>
     </div>
-  </div>  
+  </div>
 </template>
 <script>
 export default {
@@ -72,7 +72,7 @@ export default {
               }
             })
             .catch((err) => {
-              this.$message.error(err)              
+              this.$message.error(err)
             })
         } else {
           this.$message.error('新公告未填写')
@@ -105,4 +105,3 @@ export default {
 </script>
 <style>
 </style>
-

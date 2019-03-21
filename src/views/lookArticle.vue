@@ -8,6 +8,13 @@
         <span>文件：{{getLoca}}</span>
         <a :href="downloadUrl" :download="getLoca">[下载]</a>
       </div>
+      <div class="font16">书籍类型:
+        <span v-for="item in booktype">
+          <i class="bookType">
+            {{item}}
+          </i>
+        </span>
+      </div>
       <div class="header-content mt10 font16 text-left" id="contentBorder"></div>
     </div>
   </div>
@@ -31,7 +38,8 @@ export default {
       getusername: '',
       getLoca: '',
       fileshow: false,
-      downloadUrl: ''
+      downloadUrl: '',
+      booktype: [],
     }
   },
   methods: {
@@ -53,6 +61,17 @@ export default {
           this.getcontent = jsondata.content // 发布书籍的内容
           this.getCommitTime = jsondata.commitTime
           this.getusername = jsondata.username
+          // 解析用户书籍的分类
+          var bookType = this.$store.state.bookType
+          // 书籍真实类型
+          var realBookType = jsondata.booktype
+          for (let i of bookType) {
+            var typeID = i.typeID.toString()
+            if (realBookType.indexOf(typeID) !== -1) {
+              this.booktype.push(i.type)
+            }
+          }
+          // this.booktype = jsondata.booktype
           if (jsondata.fileLocation) {
             this.fileshow = true
             this.getLoca = jsondata.fileLocation.split('\\')[1]
@@ -73,7 +92,6 @@ export default {
     var booktitle = canshu.split('&')[1].split('=')[1]
     var TF = canshu.split('&')[2].split('=')[1]
     booktitle = window.decodeURI(booktitle)
-    console.log(`${bookusername},${booktitle},${TF}`)
     this.getOneBookVisit(bookusername, booktitle, TF)
   }
 }
@@ -106,5 +124,11 @@ export default {
     height: 100%;
     border-radius: 0.1rem;
     overflow: auto;
+  }
+  .bookType {
+    height: 15px;
+    color: white;
+    background-color: rgba(46, 46, 180, 0.555);
+    margin-left:3px;
   }
 </style>

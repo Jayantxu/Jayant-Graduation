@@ -12,6 +12,7 @@ import mySelfArticle from '../views/FirstNav/mySelfArticle'
 import NewArticleControl from '../views/FirstNav/NewArticleControl'
 import permissionC from '../views/FirstNav/permissionC'
 import announce from '../views/FirstNav/announce'
+import typeArticle from '../views/TypeArticle'
 
 Vue.use(Router)
 
@@ -23,6 +24,12 @@ export default new Router({
       name: 'Home',
       hidden: true,
       component: Home
+    },
+    {
+      path: '/typeArticle',
+      name: 'typeArticle',
+      hidden: true,
+      component: typeArticle
     },
     {
       path: '/register',
