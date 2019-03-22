@@ -9,6 +9,7 @@ const downloadFile = require('./routes/downloadFile')
 const mainBook = require('./routes/mainBook')
 const hotnewBook = require('./routes/hotnewBook')
 const BookCommon = require('./routes/BookCommon')
+const BookTypeShow = require('./routes/BookTypeShow')
 const bodyParser = require('body-parser')
 app.use(cookieParser())
 app.use(bodyParser.json())
@@ -45,3 +46,5 @@ app.use('/api/main', mainBook)
 app.use('/api/hotNewBook', hotnewBook)
 // 一些公共方法
 app.use('/api/common', BookCommon)
+// 书籍分类的展示
+app.use('/api/BookType', BookTypeShow)
