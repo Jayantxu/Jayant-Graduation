@@ -78,11 +78,12 @@ export default {
             return Promise.reject(json.msg)
           } else {
             this.isExist = false
+            callback()
           }
         })
         .catch((err) => {
           this.isExist = true
-          this.$message.error(err)
+          callback(new Error(err))
         })
     }
     return {
@@ -132,7 +133,9 @@ export default {
   },
   methods: {
     submitForm (registerRuleForm) {
+      console.log('纯纯粹粹')
       this.$refs[registerRuleForm].validate((valid) => {
+        console.log(valid)
         if (valid) {
           this.$http.post(
             '/api/user/registeruser',

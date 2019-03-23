@@ -44,16 +44,25 @@ module.exports = {
           jsonWrite(res, result)
           pool.releaseConnection(connection)
         } else {
+          console.log($sql.register.registerAdd)
+          console.log(`${$params.username}`)
           connection.query($sql.register.registerAdd, [$params.username, $params.password, $params.question, $params.answer, registerData], function (err, result) {
             if (err) {
-              throw new Error('注册用户插入语句出错')
+              result = {
+                code: '1',
+                msg: '用户注册失败'
+              }
+              jsonWrite(res, result)
+              pool.releaseConnection(connection)
+              console.log(`注册用户插入语句出错`)
+            } else {
+              result = {
+                code: '0',
+                msg: '用户注册成功'
+              }
+              jsonWrite(res, result)
+              pool.releaseConnection(connection)
             }
-            result = {
-              code: '0',
-              msg: '用户注册成功'
-            }
-            jsonWrite(res, result)
-            pool.releaseConnection(connection)
           })
         }
       })

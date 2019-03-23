@@ -4,6 +4,6 @@ module.exports = {
     user: 'root',
     password: '123456',
     port: '3306',
-    database: 'jayant_graduation_test'
+    database: 'jayant_graduation'
   }
 }
