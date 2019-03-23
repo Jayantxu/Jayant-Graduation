@@ -3,7 +3,7 @@
         <topheader></topheader>
         <el-container>
           <el-main class="font22" v-loading="mainLoading">
-            <div class="float-r font16 hoverClick" @click='returnTypeArticle'>按类型查看</div>
+            <div class="float-r font16 hoverClick2" @click='returnTypeArticle'>按类型查看</div>
             <ul class="main_ul">
               <li v-for="(item, index) in homedata" :key="index" class="mt10 li_box text-left">
                 <div class="contentBox"  @click="lookArticle(item)">
@@ -295,6 +295,12 @@ export default {
     color: blue;
     &:hover {
       cursor: pointer;
+    }
+  }
+  .hoverClick2 {
+    &:hover {
+        cursor: pointer;
+        border-bottom: 1px solid #3e62e0;
     }
   }
 </style>

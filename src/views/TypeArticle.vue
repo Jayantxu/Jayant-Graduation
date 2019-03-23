@@ -4,6 +4,7 @@
     <el-container>
       <!-- 主要展示部分 -->
       <el-main class="text-left">
+        <div class="float-r font16 hoverClick2" @click='returnAllArticle'>返回查看全部</div>
         <div class="font22">“{{NowType}}”标签书籍内容展示如下：</div>
         <div class="BoolBook" v-if="!NoBookShow">
           <div class="main-book-show mt15" v-loading="BookShowLoading">
@@ -55,6 +56,10 @@ export default {
     }
   },
   methods: {
+    // 返回查看所有书籍
+    returnAllArticle () {
+      location.href = '/'
+    },
     // 点击进入书籍
     lookArticle ($title, $username) {
       window.open(`/lookArticle?bookusername=${$username}&booktitle=${$title}&ls=false`)
@@ -156,5 +161,5 @@ export default {
         cursor: pointer;
         border-bottom: 1px solid #3e62e0;
     }
-}
+  }
 </style>

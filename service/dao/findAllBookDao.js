@@ -203,9 +203,11 @@ module.exports = {
           }
         })
         .then((json) => {
-          return getBook.addNewBookAllBook(json.username, json.title, json.content, json.fileLocation)
+          // 转为新图书
+          return getBook.addNewBookAllBook(json.username, json.title, json.content, json.fileLocation, json.booktype)
         })
         .then((json) => {
+          // 删除书籍--传入bool标识
           return getBook.deleteUserBook(false, bookusername, booktitle)
         })
         .then((json) => {

@@ -40,8 +40,8 @@ var sqlMap = {
     deleteAllLSBook: 'delete from lsarticle where username = ? and title = ?'
   },
   shenheBook: {
-    toSuccessBook: 'select username, title, content, fileLocation, commitTime from lsarticle where username = ? and title = ?',
-    addAllBook: 'insert into article (username, title, content, fileLocation, commitTime) values (?,?,?,?,?)',
+    toSuccessBook: 'select username, title, content, fileLocation, commitTime, booktype from lsarticle where username = ? and title = ?',
+    addAllBook: 'insert into article (username, title, content, fileLocation, commitTime, booktype) values (?,?,?,?,?,?)',
     changeButongGuostatus: 'update lsarticle SET bookstatus = 2 where username = ? and title = ?'
   },
   PersonAllbook: {
