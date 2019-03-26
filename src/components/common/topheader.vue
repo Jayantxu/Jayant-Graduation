@@ -6,9 +6,9 @@
                     <div class="col-content font22 mt5">
                         <i class="icon iconfont icon-shu iconfont48">
                         </i>
+                        <span class="font28 ml10 relative animated jackInTheBox" style="top:-10px;">书趣享</span>
                     </div>
                 </el-col>
-                <!-- 撑 -->
                 <!-- 撑位置用 -->
                 <el-col :xs="0" :sm="3" :md="6" :lg="6" :xl="4">
                     <div class="col-content font22 mt10">

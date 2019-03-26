@@ -62,7 +62,9 @@ var sqlMap = {
   },
   HotBookTop: {
     // 书籍热度加一
-    BookaddOneHot: 'INSERT bookrank (title, username, hotcount) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE hotcount = hotcount + 1'
+    BookaddOneHot: 'INSERT bookrank (title, username, hotcount) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE hotcount = hotcount + 1',
+    // 记录最新阅读
+    RecentLookingBook: 'INSERT recentlooking (username, looktitle, lookauthor) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE looktitle = ?, lookauthor = ?'
   },
   // 首页获取新书、热门书
   getNewHotBook: {

@@ -35,6 +35,33 @@ var addHotBook = function (bookusername, booktitle) {
   })
   return addHotBookpromise
 }
+// 记录为最新阅读
+var recordUserRecentLooking = function (username, bookusername, booktitle) {
+  var recordUserRecentLookingpromise = new Promise(function (resolve, reject) {
+    pool.getConnection(function (err, connection) {
+      if (err) {
+        console.log(`记录为最新阅读书籍数据库错误---recordUserRecentLooking---error`)
+      }
+      // var recentLookSQL = $sql.HotBookTop.RecentLookingBook
+      connection.query($sql.HotBookTop.RecentLookingBook, [username, booktitle, bookusername, booktitle, bookusername], (err, result) => {
+        if (err) {
+          result = {
+            msg: '记录为最新阅读书籍数据库错误---数据库语句错误'
+          }
+          pool.releaseConnection(connection)
+          reject(result)
+        } else {
+          result = {
+            msg: '更新了用户最新阅读书籍'
+          }
+          pool.releaseConnection(connection)
+          resolve(result)
+        }
+      })
+    })
+  })
+  return recordUserRecentLookingpromise
+}
 module.exports = {
   getOneBook: function (req, res, next) {
     var result = {}
@@ -89,6 +116,7 @@ module.exports = {
       var bookusername = $params.bookusername
       var booktitle = $params.booktitle
       var bookTF = $params.bookTF
+      var username = $params.username
       getPersonBook.lookOneBook(bookusername, booktitle, bookTF)
         .then((json) => {
           result = {
@@ -99,10 +127,18 @@ module.exports = {
             },
             msg: '获取成功'
           }
-          // 记录书籍点击后的热度+,正式书籍的情况下,false的情况下就是正式书库
+          // 记录书籍点击后的热度+1 ;并且记录为用户最新阅读
+          // 正式书籍的情况下,false的情况下就是正式书库
           if (bookTF === 'false') {
+            // 增加书籍热度+1
             addHotBook(bookusername, booktitle).then((json) => {
               console.log(json.msg)
+              // 记录为最新阅读书籍
+              return recordUserRecentLooking(username, bookusername, booktitle)
+            }).then((json) => {
+              console.log(json.msg)
+            }).catch((err) => {
+              console.log(`${err.msg},出错了`)
             })
             jsonWrite.jsonWrite(res, result)
           } else {
