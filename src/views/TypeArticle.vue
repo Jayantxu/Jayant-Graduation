@@ -97,6 +97,12 @@ export default {
   },
   mounted () {
     this.bookType = this.$store.state.bookType
+    if (window.location.search) {
+      var search = window.location.search.split('?')[1]
+      // decodeURI
+      this.NowTypeID = search.split('&')[0].split('=')[1]
+      this.NowType = window.decodeURI(search.split('&')[1].split('=')[1])
+    }
     this.chooseBookType(this.NowTypeID, this.NowType, this.nowPage)
   },
   components: {

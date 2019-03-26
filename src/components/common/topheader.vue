@@ -8,30 +8,61 @@
                         </i>
                     </div>
                 </el-col>
+                <!-- 撑 -->
                 <!-- 撑位置用 -->
-                <el-col :xs="0" :sm="3" :md="6" :lg="7" :xl="4">
+                <el-col :xs="0" :sm="3" :md="6" :lg="6" :xl="4">
                     <div class="col-content font22 mt10">
                     </div>
                 </el-col>
                 <!-- 搜索框 -->
-                <el-col :xs="7" :sm="7" :md="6" :lg="6" :xl="8">
+                <el-col :xs="7" :sm="7" :md="6" :lg="7" :xl="8">
                     <div class="col-content font22 mt10">
+                        <!-- 查找框 -->
+                        <el-select v-model="FindAcording" placeholder="标题"  style="width:20%;">
+                          <el-option
+                            v-for="item in FindAcordingStr"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                          </el-option>
+                        </el-select>
+                        <!-- 输入框 -->
                         <el-select
                           v-model="searchValue"
                           filterable
                           remote
-                          placeholder="请输入相关文章"
+                          :placeholder="searchValuePlaceholder"
                           :remote-method="remotesearchMethod"
                           :loading="searchloading"
                           style="width:70%;"
-                          @change="lookArticle">
-                          <el-option
-                            v-for="item in searchResult"
-                            :key="item.title+' '+item.username"
-                            :label="item.title+' '+item.username"
-                            :value="item.title+' '+item.username"
-                            >
-                          </el-option>
+                          @change="returnSearch">
+                          <div v-if="this.FindAcording === 'booktype'">
+                            <el-option 
+                              v-for="item in searchResult"
+                              :key="item.typeID"
+                              :label="item.type"
+                              :value="item.typeID+' '+item.type"
+                              >
+                            </el-option>
+                          </div>
+                          <div v-else-if="this.FindAcording === 'user'">
+                            <el-option 
+                                v-for="item in searchResult"
+                                :key="item.username"
+                                :label="item.username"
+                                :value="item.username"
+                                >
+                              </el-option>
+                          </div>
+                          <div v-else>
+                            <el-option 
+                              v-for="item in searchResult"
+                              :key="item.title+' '+item.username"
+                              :label="item.title"
+                              :value="item.title+' '+item.username"
+                              >
+                            </el-option>
+                          </div>
                         </el-select>
                     </div>
                 </el-col>
@@ -98,10 +129,22 @@
 <script>
 export default {
   name: 'topheader',
+  watch: {
+    'FindAcording': function () {
+      if (this.FindAcording === 'user')  {
+        this.searchValuePlaceholder = `请输入用户名进行搜索`
+      } else if (this.FindAcording === 'booktype') {
+        this.searchValuePlaceholder = `请输入相关类别进行搜索`
+      } else {
+        this.searchValuePlaceholder = `请输入图书文章标题进行搜索`
+      }
+    }
+  },
   data () {
     return {
       // 搜索的value
       searchValue: [],
+      searchValuePlaceholder: '请输入图书文章标题进行搜索', // 搜索的placeholder
       searchloading: false,
       // 搜索结果
       searchResult: [],
@@ -123,7 +166,18 @@ export default {
           {required: true, message: '请输入密码', trigger: 'blur'},
           {min: 5, max: 15, message: '密码长度在5-15个字符', trigger: 'blur'}
         ]
-      }
+      },
+      FindAcordingStr: [{
+        value: 'title',
+        label: '标题'
+      }, {
+        value: 'booktype',
+        label: '分类'
+      }, {
+        value: 'user',
+        label: '用户'
+      }], // 下拉框的选择内容
+      FindAcording: 'title' // 下拉选择到的查找标准
     }
   },
   computed: {
@@ -132,21 +186,31 @@ export default {
     // }
   },
   methods: {
-    //  搜索框点击后的响应
-    //  查看文章
+    // 用于分配搜索框的下拉响应
+    returnSearch() {
+      if (this.FindAcording === 'booktype') {
+        window.open(`/TypeArticle?typeID=${this.searchValue.split(' ')[0]}&type=${this.searchValue.split(' ')[1]}`)
+      } else if (this.FindAcording === 'user') {
+        console.log('跳转用户')
+      } else {
+        this.lookArticle()
+      }
+    },
+    //  搜索框点击后的响应 查看文章
     lookArticle () {
       var bookusername = this.searchValue.split(' ')[1]
       var booktitle = this.searchValue.split(' ')[0]
-      console.log(`${bookusername}${booktitle}`)
       window.open(`/lookArticle?bookusername=${bookusername}&booktitle=${booktitle}&ls=false`)
     },
     //  搜索框的搜索方法
     remotesearchMethod (query) {
+      // console.log(`${query},${this.FindAcording}`)
       if (query !== '') {
         this.searchloading = true
         this.$http.post('/api/main/search', {
           params: {
-            queryWord: query
+            queryWord: query,
+            queryType: this.FindAcording
           }
         })
           .then((res) => {

@@ -8,7 +8,7 @@ var jsonWrite = require('../public/jsonWrite')
 // 使用连接池,提升性能
 var pool = mysql.createPool($conn.mysql)
 //  搜索数据库关键字
-var searchKeyWordPromise = function (queryWord) {
+var searchKeyWordPromise = function (queryWord, queryType) {
   var promise = new Promise(function (resolve, reject) {
     pool.getConnection(function (err, connection) {
       var result = {}
@@ -22,8 +22,18 @@ var searchKeyWordPromise = function (queryWord) {
         console.log('关键字搜索数据库连接出错')
         reject(result)
       }
-      var sqlYUJUsearch = `select title, username from article where title like '%${queryWord}%' or username like '%${queryWord}%'`
-      connection.query(sqlYUJUsearch, [queryWord, queryWord], (err, result) => {
+      var sqlYUJUsearch
+      if (queryType === 'booktype') {
+        // 搜索的分类是书籍类别的情况
+        sqlYUJUsearch = `select typeID, type from typeleixing where type like '%${queryWord}%'`
+      } else if (queryType === 'user') {
+        // 搜索的情况是用户名的情况
+        sqlYUJUsearch = `select username from userinfo where username like '%${queryWord}%'`
+      } else {
+        // 搜索的分类是标题的情况
+        sqlYUJUsearch = `select title, username from article where title like '%${queryWord}%'`
+      }
+      connection.query(sqlYUJUsearch, [queryWord], (err, result) => {
         if (err) {
           result = {
             code: '1',
@@ -35,7 +45,6 @@ var searchKeyWordPromise = function (queryWord) {
           console.log('关键字搜索数据库语句出错')
           reject(result)
         } else {
-          // 将寻找到的密码与加密后进行匹配,并在此处处理token问题
           result = sqlformatJSON.transforms(result)
           resolve(result)
           pool.releaseConnection(connection)
@@ -78,7 +87,8 @@ module.exports = {
     var result = {}
     var $params = req.body.params
     var queryWord = $params.queryWord
-    searchKeyWordPromise(queryWord)
+    var queryType = $params.queryType
+    searchKeyWordPromise(queryWord, queryType)
       .then((json) => {
         result = {
           code: '0',
