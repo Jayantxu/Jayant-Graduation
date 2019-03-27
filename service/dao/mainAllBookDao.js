@@ -1,6 +1,7 @@
 // 实现与数据库交互
 var mysql = require('mysql')
 var $conn = require('../db/db')
+var $sql = require('../db/sqlMap')
 // 引入mysql转JSON
 var sqlformatJSON = require('../public/sqlformatJSON')
 var getBook = require('../public/getBook')
@@ -54,6 +55,90 @@ var searchKeyWordPromise = function (queryWord, queryType) {
   })
   return promise
 }
+// 获取用户最新阅读的书籍信息
+var recentRecommend = function (username) {
+  var recentRecommendpromise = new Promise(function (resolve, reject) {
+    pool.getConnection(function (err, connection) {
+      var result = {}
+      if (err) {
+        result = {
+          code: '1',
+          data: {
+          },
+          msg: '服务器出错'
+        }
+        console.log('搜索用户最近阅读数据库连接出错')
+        reject(result)
+      }
+      connection.query($sql.HotBookTop.getRecentLooking, [username], (err, result) => {
+        if (err) {
+          result = {
+            code: '1',
+            data: {
+            },
+            msg: '服务器出错'
+          }
+          pool.releaseConnection(connection)
+          console.log('搜索用户最近阅读数据库语句出错')
+          reject(result)
+        } else {
+          result = sqlformatJSON.transforms(result)
+          resolve(result[0])
+          pool.releaseConnection(connection)
+        }
+      })
+    })
+  })
+  return recentRecommendpromise
+}
+// 获取推荐的阅读
+var getRecommend = function (recentBooktype) {
+  var recentBookArr = recentBooktype.split(',')
+  var recommendArr = []
+  for (let i of recentBookArr) {
+    if (i) {
+      recommendArr.push(i)
+    }
+  }
+  var sqlsstr = `booktype LIKE '%${recommendArr[0]}%'`
+  for (var i = 1; i < recommendArr.length; i++) {
+    sqlsstr += `or booktype LIKE '%${recommendArr[i]}%'`
+  }
+  var $recommendSQL = `select username, title from article where ${sqlsstr}`
+  var getRecommendpromise = new Promise(function (resolve, reject) {
+    pool.getConnection(function (err, connection) {
+      var result = {}
+      if (err) {
+        result = {
+          code: '1',
+          data: {
+          },
+          msg: '服务器出错'
+        }
+        console.log('推荐用户阅读数据库连接出错')
+        reject(result)
+      }
+      connection.query($recommendSQL, (err, result) => {
+        if (err) {
+          result = {
+            code: '1',
+            data: {
+            },
+            msg: '服务器出错'
+          }
+          pool.releaseConnection(connection)
+          console.log('推荐用户最近阅读数据库语句出错')
+          reject(result)
+        } else {
+          result = sqlformatJSON.transforms(result)
+          resolve(result)
+          pool.releaseConnection(connection)
+        }
+      })
+    })
+  })
+  return getRecommendpromise
+}
 module.exports = {
   // 正式书库中找所有书
   findBook: function (req, res, next) {
@@ -100,6 +185,52 @@ module.exports = {
         jsonWrite.jsonWrite(res, result)
       })
       .catch((err) => {
+        jsonWrite.jsonWrite(res, err)
+      })
+  },
+  recentAndrecommend: function (req, res, next) {
+    var $params = req.query
+    var username = $params.username
+    var recentResult // 记录最近阅读
+    var recommendResult = [] // 记录推荐的阅读
+    recentRecommend(username)
+      .then((json) => {
+        recentResult = json
+        var recentBooktype = json.booktype
+        return getRecommend(recentBooktype)
+      })
+      .then((json) => {
+        // 如果大于等于三本，则推荐三本，否则全部返回
+        var recommendlen = json.length
+        var result
+        if (recommendlen >= 3) {
+          for (var j = 1; j <= 3; j++) {
+            var num = Math.floor(Math.random() * recommendlen)
+            recommendResult.push(json[num])
+          }
+          result = {
+            code: '0',
+            data: {
+              recentResultData: recentResult,
+              recommendResultData: recommendResult
+            },
+            msg: '搜索完成'
+          }
+        } else {
+          recommendResult = json
+          result = {
+            code: '0',
+            data: {
+              recentResultData: recentResult,
+              recommendResultData: recommendResult
+            },
+            msg: '完成'
+          }
+        }
+        jsonWrite.jsonWrite(res, result)
+      })
+      .catch((err) => {
+        console.log(err)
         jsonWrite.jsonWrite(res, err)
       })
   }

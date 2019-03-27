@@ -36,14 +36,14 @@ var addHotBook = function (bookusername, booktitle) {
   return addHotBookpromise
 }
 // 记录为最新阅读
-var recordUserRecentLooking = function (username, bookusername, booktitle) {
+var recordUserRecentLooking = function (username, bookusername, booktitle, RecentBooktype) {
   var recordUserRecentLookingpromise = new Promise(function (resolve, reject) {
     pool.getConnection(function (err, connection) {
       if (err) {
         console.log(`记录为最新阅读书籍数据库错误---recordUserRecentLooking---error`)
       }
       // var recentLookSQL = $sql.HotBookTop.RecentLookingBook
-      connection.query($sql.HotBookTop.RecentLookingBook, [username, booktitle, bookusername, booktitle, bookusername], (err, result) => {
+      connection.query($sql.HotBookTop.RecentLookingBook, [username, booktitle, bookusername, RecentBooktype, booktitle, bookusername, RecentBooktype], (err, result) => {
         if (err) {
           result = {
             msg: '记录为最新阅读书籍数据库错误---数据库语句错误'
@@ -129,12 +129,13 @@ module.exports = {
           }
           // 记录书籍点击后的热度+1 ;并且记录为用户最新阅读
           // 正式书籍的情况下,false的情况下就是正式书库
+          var RecentBooktype = json[0].booktype
           if (bookTF === 'false') {
             // 增加书籍热度+1
             addHotBook(bookusername, booktitle).then((json) => {
               console.log(json.msg)
               // 记录为最新阅读书籍
-              return recordUserRecentLooking(username, bookusername, booktitle)
+              return recordUserRecentLooking(username, bookusername, booktitle, RecentBooktype)
             }).then((json) => {
               console.log(json.msg)
             }).catch((err) => {
