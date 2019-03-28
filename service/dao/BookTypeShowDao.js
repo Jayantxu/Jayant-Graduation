@@ -96,5 +96,6 @@ module.exports = {
       .catch((err) => {
         jsonWrite.jsonWrite(res, err)
       })
-  }
+  },
+  getEveryType: getEveryTypeBookPage
 }

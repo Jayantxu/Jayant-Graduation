@@ -204,7 +204,7 @@ module.exports = {
         })
         .then((json) => {
           // 转为新图书
-          return getBook.addNewBookAllBook(json.username, json.title, json.content, json.fileLocation, json.booktype)
+          return getBook.addNewBookAllBook(json.username, json.title, json.content, json.fileLocation, json.booktype, json.picLocation)
         })
         .then((json) => {
           // 删除书籍--传入bool标识

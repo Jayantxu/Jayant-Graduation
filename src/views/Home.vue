@@ -5,7 +5,7 @@
           <el-main class="font22" v-loading="mainLoading">
             <MainGD class="" style="width:100%"></MainGD>
             <MainUserRecent></MainUserRecent>
-            <!-- <div class="float-r font16 hoverClick2" @click='returnTypeArticle'>按类型查看</div> -->
+            <MainHotBooktype></MainHotBooktype>
             <ul class="main_ul">
               <li v-for="(item, index) in homedata" :key="index" class="mt10 li_box text-left">
                 <div class="contentBox"  @click="lookArticle(item)">
@@ -66,6 +66,7 @@
 import topheader from '../components/common/topheader'
 import MainGD from '../components/common/MainGD'
 import MainUserRecent from '../components/common/MainUserRecent'
+import MainHotBooktype from '../components/common/MainHotBooktype'
 import getBookType from '../assets/JS/getBookType'
 export default {
   name: 'Home',
@@ -88,7 +89,8 @@ export default {
   components: {
     topheader,
     MainGD,
-    MainUserRecent
+    MainUserRecent,
+    MainHotBooktype
   },
   methods: {
     // 跳转类型分类

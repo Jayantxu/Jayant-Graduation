@@ -164,7 +164,7 @@ module.exports = {
       })
     })
   },
-  addNewBookAllBook: function (username, title, content, file, booktype) {
+  addNewBookAllBook: function (username, title, content, file, booktype, picLocation) {
     return new Promise(function (resolve, reject) {
       pool.getConnection(function (err, connection) {
         var result = {}
@@ -179,7 +179,7 @@ module.exports = {
           reject(result)
         }
         var commitData = changeTime.toSqlTime() // 转指定格式时间
-        connection.query($sql.shenheBook.addAllBook, [username, title, content, file, commitData, booktype], (err, result) => {
+        connection.query($sql.shenheBook.addAllBook, [username, title, content, file, commitData, booktype, picLocation], (err, result) => {
           if (err) {
             result = {
               code: '1',

@@ -40,8 +40,8 @@ var sqlMap = {
     deleteAllLSBook: 'delete from lsarticle where username = ? and title = ?'
   },
   shenheBook: {
-    toSuccessBook: 'select username, title, content, fileLocation, commitTime, booktype from lsarticle where username = ? and title = ?',
-    addAllBook: 'insert into article (username, title, content, fileLocation, commitTime, booktype) values (?,?,?,?,?,?)',
+    toSuccessBook: 'select username, title, content, fileLocation, commitTime, booktype, picLocation from lsarticle where username = ? and title = ?',
+    addAllBook: 'insert into article (username, title, content, fileLocation, commitTime, booktype, picLocation) values (?,?,?,?,?,?,?)',
     changeButongGuostatus: 'update lsarticle SET bookstatus = 2 where username = ? and title = ?'
   },
   PersonAllbook: {
@@ -71,7 +71,10 @@ var sqlMap = {
   // 首页获取新书、热门书
   getNewHotBook: {
     getHotBook: 'select title, username from bookrank order by hotcount desc limit 10',
-    getNewBook: 'select title, username from article order by commitTime desc limit 10'
+    getNewBook: 'select title, username from article order by commitTime desc limit 10',
+    getRankTopHot: `select title, username from bookrank where hotcount = (select MAX(hotcount) as maxclickNum FROM bookrank)`,
+    getRankTopHotType: `select booktype from article where title = ? and username = ?`
+  
   },
   aboutAnnounce: {
     commit: 'insert into announceTable (announce, commitTime, form) values (?,?,?)',

@@ -225,6 +225,9 @@ html {
 .inline-block {
     display: inline-block;
 }
+.block {
+    display: block;
+}
 .btn-l20 .el-button+.el-button {
     margin-left: 20px !important;
 }
@@ -266,4 +269,10 @@ html {
 }
 .font-white {
     color: white;
+}
+.font-black {
+    color: black;
+}
+.font-bold {
+    font-weight: bold;
 }

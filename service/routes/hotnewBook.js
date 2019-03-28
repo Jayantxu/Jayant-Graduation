@@ -7,4 +7,7 @@ router.get('/getHotBook', function (req, res, next) {
 router.get('/getNewBook', function (req, res, next) {
   getHotNewBookDao.getNewBook(req, res, next)
 })
+router.get('/getTopHotBook', function (req, res, next) {
+  getHotNewBookDao.getTopHotBook(req, res, next)
+})
 module.exports = router
