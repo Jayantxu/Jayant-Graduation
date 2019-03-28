@@ -34,7 +34,7 @@ var sqlMap = {
     // 获取所有图书总数
     getAllBookNum: 'select count(*) as numB from article',
     getAllLSBookNum: 'select count(*) as numB from lsarticle',
-    getAllBook: 'select commitTime,title,username,fileLocation from article limit ?,10',
+    getAllBook: 'select commitTime,title,username,fileLocation,booktype from article limit ?,10',
     getAllLSBook: 'select commitTime,title,username,fileLocation,bookstatus from lsarticle where username != ? limit ?,10',
     deleteAllBook: 'delete from article where username = ? and title = ?',
     deleteAllLSBook: 'delete from lsarticle where username = ? and title = ?'

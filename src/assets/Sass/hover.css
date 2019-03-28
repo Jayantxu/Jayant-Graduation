@@ -488,6 +488,8 @@
 }
 .hvr-skew-forward:hover, .hvr-skew-forward:focus, .hvr-skew-forward:active {
   -webkit-transform: skew(-10deg);
+  color: rgba(17, 123, 194, 0.719);
+  cursor: pointer;
   transform: skew(-10deg);
 }
 
@@ -721,6 +723,7 @@
   animation-timing-function: ease-in-out;
   -webkit-animation-iteration-count: 1;
   animation-iteration-count: 1;
+  cursor: pointer;
 }
 
 /* Wobble To Top Right */

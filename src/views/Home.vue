@@ -2,13 +2,19 @@
     <div>
         <topheader></topheader>
         <el-container>
-          <el-main class="font22" v-loading="mainLoading">
+          <el-main class="font22">
             <MainGD class="" style="width:100%"></MainGD>
             <MainUserRecent></MainUserRecent>
             <MainHotBooktype></MainHotBooktype>
+            <MainhasFileBook></MainhasFileBook>
+            <div class="text-left ml10 mt10 mb15">
+              <span class="font-bold font18">
+                按时间排序：
+              </span>
+            </div>
             <ul class="main_ul">
               <li v-for="(item, index) in homedata" :key="index" class="mt10 li_box text-left">
-                <div class="contentBox"  @click="lookArticle(item)">
+                <div class="contentBox hvr-bob"  @click="lookArticle(item)">
                   <div class="font24">{{item.title}}</div>
                   <div class="font16 mt15 ml5">
                     <span>{{item.username}}</span>
@@ -41,7 +47,7 @@
               </i>
               <div class="clear font14 mt5" v-loading="hotBookLoading">
                 <div v-for="item in hotBookRank">
-                  <div v-for="(item2) in item" class="float-l ml15 mt5 aside-hotRankBookDiv" @click="lookArticle(item2)">
+                  <div v-for="(item2) in item" class="float-l ml15 mt5 aside-hotRankBookDiv hvr-bounce-in" @click="lookArticle(item2)">
                     {{item2.title}}
                   </div>
                 </div>
@@ -52,7 +58,7 @@
               </i>
               <div class="clear font14 mt5" v-loading="newBookLoading">
                 <div v-for="item in newBookRank">
-                  <div v-for="(item2) in item" class="float-l ml15 mt5 aside-NewRankBookDiv" @click="lookArticle(item2)">
+                  <div v-for="(item2) in item" class="float-l ml15 mt5 aside-NewRankBookDiv hvr-pulse-grow" @click="lookArticle(item2)">
                     {{item2.title}}
                   </div>
                 </div>
@@ -67,6 +73,7 @@ import topheader from '../components/common/topheader'
 import MainGD from '../components/common/MainGD'
 import MainUserRecent from '../components/common/MainUserRecent'
 import MainHotBooktype from '../components/common/MainHotBooktype'
+import MainhasFileBook from '../components/common/MainhasFileBook'
 import getBookType from '../assets/JS/getBookType'
 export default {
   name: 'Home',
@@ -90,7 +97,8 @@ export default {
     topheader,
     MainGD,
     MainUserRecent,
-    MainHotBooktype
+    MainHotBooktype,
+    MainhasFileBook
   },
   methods: {
     // 跳转类型分类

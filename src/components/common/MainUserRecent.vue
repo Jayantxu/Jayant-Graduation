@@ -1,5 +1,5 @@
 <template>
-  <div class="recentLooking text-left mt15" v-if="successBack">
+  <div class="recentLooking text-left mt15" v-if="successBack" v-loading="recentBookLoading">
     <div class="recent1">
       <span class="font18 inline-block font-white ml10 mt10">您的最近阅读：</span>
       <div class="inline-block font-white recent1-1 ml30 mt20 hvr-float-shadow">
@@ -30,7 +30,8 @@ export default {
     return {
       Recent: {},
       Recommend: {},
-      successBack: false
+      successBack: true,
+      recentBookLoading: true
     }
   },
   methods: {
@@ -59,6 +60,7 @@ export default {
         this.Recent = json.data.recentResultData
         this.Recommend = json.data.recommendResultData
         this.successBack = true
+        this.recentBookLoading = false
         console.log(this.Recent)
         console.log(this.Recommend)
       }).catch((err) => {

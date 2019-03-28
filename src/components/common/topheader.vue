@@ -173,10 +173,7 @@ export default {
       }, {
         value: 'booktype',
         label: '分类'
-      }, {
-        value: 'user',
-        label: '用户'
-      }], // 下拉框的选择内容
+      }], // 下拉框的选择内容------隐藏了{value: 'user', label: '用户'}
       FindAcording: 'title' // 下拉选择到的查找标准
     }
   },

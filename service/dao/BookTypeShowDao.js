@@ -16,7 +16,9 @@ var getBookNumTotal = function ($ID) {
         console.log(`按书籍分类查找数据库错误---getBookNumTotal---error`)
       }
       // 获取分类书籍的数目总数
-      var $sqlFind = `select count(*) as numA from article where booktype LIKE '%${$ID}%'`
+      var a = `select count(*) as numA from article where booktype LIKE '%${$ID}%'`
+      var b = `select count(*) as numA from article where fileLocation is NOT NULL`
+      var $sqlFind = $ID === '2' ? b : a
       connection.query($sqlFind, (err, result) => {
         if (err) {
           result = {
@@ -47,7 +49,9 @@ var getEveryTypeBookPage = function ($ID, $Page) {
         console.log(`按书籍分类查找每一分页数据库错误---getEveryTypeBookPage---error`)
       }
       $Page = ($Page - 1) * 10
-      var getTypeBookEveryPageSql = `select commitTime,title,username from article where booktype LIKE '%${$ID}%' limit ${$Page},10`
+      var a = `select commitTime,title,username from article where booktype LIKE '%${$ID}%' limit ${$Page},10`
+      var b = `select commitTime,title,username from article where fileLocation is NOT NULL ORDER BY  RAND() limit ${$Page},10`
+      var getTypeBookEveryPageSql = $ID === '2' ? b : a
       connection.query(getTypeBookEveryPageSql, (err, result) => {
         if (err) {
           result = {
