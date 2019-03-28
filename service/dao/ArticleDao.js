@@ -67,7 +67,7 @@ var setBookType = function ($booktype) {
   })
   return setBookTypepromise
 }
-var setBookToSql = function (req, res, $params, locationPath, trr) {
+var setBookToSql = function (req, res, $params, locationPath, trr, locationPicPath) {
   var endArr = ''
   if (trr) {
     var arr2 = $params.bookType1.split(',')
@@ -98,7 +98,7 @@ var setBookToSql = function (req, res, $params, locationPath, trr) {
     // 利用中间变量转换
     // second的标识，为true为二次编辑，false为初次提交，更新与新建记录的区别
     var str = $params.second === 'false' ? $sql.article.newArticle : $sql.article.secondeArticle
-    var arr = $params.second === 'false' ? [$params.username, $params.articleTitle, $params.articleContent, locationPath, commitData, endArr] : [$params.articleContent, $params.oldFile, commitData, endArr, $params.username, $params.articleTitle]
+    var arr = $params.second === 'false' ? [$params.username, $params.articleTitle, $params.articleContent, locationPath, commitData, endArr, locationPicPath] : [$params.articleContent, $params.oldFile, commitData, endArr, locationPicPath, $params.username, $params.articleTitle]
     // 需要先将分类提交一遍至分类表
     connection.query(str, arr, function (err, result) {
       if (err) {
@@ -131,20 +131,36 @@ var setBookToSql = function (req, res, $params, locationPath, trr) {
     })
   })
 }
-var commitToSql = function (req, res, $params, locationPath) {
+var commitToSql = function (req, res, $params, locationPath, locationPicPath) {
   if ($params.bookType2) {
     setBookType($params.bookType2)
       .then((json) => {
         // 保存完书籍的分类，接下去保存详细信息
         // json 是新分类的ID
-        setBookToSql(req, res, $params, locationPath, json)
+        setBookToSql(req, res, $params, locationPath, json, locationPicPath)
       })
       .catch((err) => {
         jsonWrite(res, err)
       })
   } else {
-    setBookToSql(req, res, $params, locationPath)
+    var json = false
+    setBookToSql(req, res, $params, locationPath, json, locationPicPath)
   }
+}
+var fsRename = function (oldpath, newpath) {
+  var fsRenamepromise = new Promise(function (resolve, reject) {
+    var result
+    fs.rename(oldpath, newpath, function (err) {
+      if (err) {
+        console.log('fsRename重命名与移动错误')
+        result = `${newpath}移动重命名失败`
+        reject(result)
+      }
+      result = `${newpath}移动重命名成功`
+      resolve(result)
+    })
+  })
+  return fsRenamepromise
 }
 module.exports = {
   commitNewArticle: function (req, res, next) {
@@ -181,38 +197,74 @@ module.exports = {
           }
           jsonWrite(res, result)
         } else {
-          // // fields存放json数据，files存放的是文件信息
+          // // fields存放json数据，files存放的是文件信息，files.file:书籍文件，files.PicFile：封面文件
           // 存目录
-          var newpath
-          // console.log('测试图片')
-          // console.log($params)
-          if (files.file) {
-            console.log(files.file.path)
-            let oldpath = path.join(files.file.path)
-            var JsonFile = files.file
-            var fileName = JsonFile.name
-            console.log(fileName)
-            // // 新的目录，为了防止同名，再加上随机数
-            var ranFileName = String(parseInt(Math.random() * 8999 + 10000)).concat(fileName)
-            console.log(ranFileName)
-            newpath = path.join('./uploadFile', ranFileName)
-            fs.rename(oldpath, newpath, function (err) {
-              if (err) {
-                result = {
-                  // 40表未登录
-                  code: '1',
-                  data: {
-                  },
-                  msg: '新文章上传错误'
-                }
-                jsonWrite(res, result)
-                console.log(`上传文件重命名错误${err}`)
-              } else {
-                commitToSql(req, res, $params, newpath)
+          var newFilepath, newPicpath, randomInt, oldFilepath, oldPicpath, fileResult, PicResult
+          if (files.file || files.PicFile) {
+            randomInt = parseInt(Math.random() * 8999 + 10000)
+            if (files.file) {
+              oldFilepath = path.join(files.file.path) // 记录旧文件路径
+              var JsonFile = files.file // 旧文件
+              var fileName = JsonFile.name
+              // 新的目录，为了防止同名，再加上随机数
+              var ranFileName = String(randomInt).concat(fileName)
+              newFilepath = path.join('./uploadFile', ranFileName)
+              if (files.file && !files.PicFile) {
+                newPicpath = false
+                fsRename(oldFilepath, newFilepath).then((json) => {
+                  commitToSql(req, res, $params, newFilepath, newPicpath)
+                }).catch((err) => {
+                  var result = {
+                    code: '1',
+                    data: {
+                    },
+                    msg: '文件上传失败'
+                  }
+                  console.log(`${err},只有文件的情况`)
+                  jsonWrite(res, result)
+                })
               }
-            })
+            }
+            if (files.PicFile) {
+              oldPicpath = path.join(files.PicFile.path) // 记录旧文件路径
+              var JsonPic = files.PicFile // 旧文件
+              var picName = JsonPic.name
+              // 新的目录，为了防止同名，再加上随机数
+              var ranPicName = String(randomInt).concat(picName)
+              newPicpath = path.join('./uploadPic', ranPicName)
+              if (!files.file && files.PicFile) {
+                newFilepath = false
+                fsRename(oldPicpath, newPicpath).then((json) => {
+                  commitToSql(req, res, $params, newFilepath, newPicpath)
+                }).catch((err) => {
+                  var result = {
+                    code: '1',
+                    data: {
+                    },
+                    msg: '图片上传失败'
+                  }
+                  console.log(`${err},只有图片的情况`)
+                  jsonWrite(res, result)
+                })
+              }
+            }
+            if (files.file && files.PicFile) {
+              Promise.all([fsRename(oldPicpath, newPicpath), fsRename(oldFilepath, newFilepath)])
+                .then(function (results) {
+                  commitToSql(req, res, $params, newFilepath, newPicpath)
+                }).catch(function (e) {
+                  var result = {
+                    code: '1',
+                    data: {
+                    },
+                    msg: '图片、文件上传失败'
+                  }
+                  console.log(e)
+                  jsonWrite(res, result)
+                })
+            }
           } else {
-            commitToSql(req, res, $params, newpath)
+            commitToSql(req, res, $params, newFilepath, newPicpath)
           }
         }
       })

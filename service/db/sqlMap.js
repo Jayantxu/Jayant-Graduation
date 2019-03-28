@@ -16,8 +16,8 @@ var sqlMap = {
     findUserExist: 'select count(*) as num from userinfo where username = ?'
   },
   article: {
-    newArticle: 'insert into lsarticle (username, title, content, fileLocation, commitTime, bookstatus, booktype) values (?,?,?,?,?,0,?)',
-    secondeArticle: 'update lsarticle SET content = ?, fileLocation = ?, commitTime = ?, bookstatus = 0, booktype = ? where username = ? and title = ?'
+    newArticle: 'insert into lsarticle (username, title, content, fileLocation, commitTime, bookstatus, booktype, picLocation) values (?,?,?,?,?,0,?,?)',
+    secondeArticle: 'update lsarticle SET content = ?, fileLocation = ?, commitTime = ?, bookstatus = 0, booktype = ?, picLocation = ? where username = ? and title = ?'
   },
   Permission: {
     check: 'select permission from userinfo where username = ?'

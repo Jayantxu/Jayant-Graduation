@@ -7,8 +7,8 @@
         <div ref="editor" style="text-align:left" >
         </div>
       </el-form>
-      <div class="mt20 ml20 vw20">
-        <el-upload class="upload-demo" ref="upload" action=""
+      <div class="mt20 ml20 text-left  vw30">
+        <el-upload class="upload-demo inline-block" ref="upload" action=""
           :with-credentials="true"
           :on-error="handleError"
           :limit="1"
@@ -23,14 +23,17 @@
           <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button> -->
           <div slot="tip" class="el-upload__tip">只能上传jpg、pdf、doc文件，且不超过5MB</div>
         </el-upload>
-        <div class="mt10" v-show="hasdownloadFile">
+        <div class="mt10 inline-block" v-show="hasdownloadFile">
           <span>已上传文件:</span>
           <a :href="downloadUrl" :download="downloadFile">{{filenameD}}</a>
         </div>
       </div>
-      <p class="font14 float-l">书籍分类：(限3种)</p>
+      <div class="text-left mt40 ml20">
+        <uploadPic class="inline-block" @sendPicFile="getPicFile"></uploadPic>
+      </div>
+      <p class="font14 float-l mt40 ml20">书籍分类：(限3种)</p>
       <!-- 书籍分类的Tag -->
-      <div class="bookTypeTag mt10 mb5">
+      <div class="bookTypeTag mt30 ml20 mb5">
         <div class="float-l vw30">
           <el-select style="width:70%;"  v-model="chooseBooktype" multiple :multiple-limit="BookTypeNum" placeholder="请选择">
             <el-option
@@ -45,7 +48,7 @@
           <el-input v-model="chooseBooktype2" placeholder="输入自定分类（、）分隔"></el-input>
         </div>
       </div>
-      <div class="mt10 btn-l20">
+      <div class="mt20 btn-l20">
         <el-button type="warning" round @click="clearDialog = true">重置编辑框</el-button>
         <el-button type="primary" round  @click="commitContent('ruleEditor')">提交</el-button>
       </div>
@@ -71,9 +74,11 @@
 <script>
 import E from 'wangeditor'
 import getBookType from '../../assets/JS/getBookType'
+import uploadPic from './uploadPic'
 export default {
   name: 'editor',
   components: {
+    uploadPic
   },
   props: ['fatherTitle', 'fathercontent', 'fatherLoca', 'fathergetFile'],
   watch: {
@@ -141,10 +146,21 @@ export default {
         ]
       },
       fileList: [
-      ]
+      ],
+      hasPicFile: false,
+      PicFile: ''
     }
   },
   methods: {
+    getPicFile (hasFile, file) {
+      if (hasFile) {
+        this.hasPicFile = hasFile
+        this.PicFile = file
+      } else {
+        this.hasPicFile = hasFile
+        this.PicFile = ''
+      }
+    },
     /*  以下上传文件相关  */
     submitUpload () {
       if (this.chooseBooktype2array.length + this.chooseBooktype.length >= 4) {
@@ -227,6 +243,10 @@ export default {
         // 记录原始旧文件
         formData.append('oldFile', this.fatherLoca)
       }
+      // 记录可能有的封面图片
+      if (this.hasPicFile) {
+        formData.append('PicFile', this.PicFile)
+      }
       formData.append('articleTitle', this.ruleEditor.commentTitle)
       formData.append('articleContent', this.editorContenthtml)
       formData.append('username', this.$store.state.DLusername)
@@ -241,6 +261,8 @@ export default {
       }
       // 注意formData添加的不是挂载在实例上的
       // console.log(formData.get('file'))
+      // console.log(formData.get('PicFile'))
+
       this.$http.post('/api/article/commitNewArticle', formData, config)
         .then((res) => {
           var json = res.data

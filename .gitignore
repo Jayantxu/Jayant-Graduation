@@ -2,6 +2,9 @@
 node_modules/
 /dist/
 /service/uploadfile/
+/service/uploadfileTest/
+/service/uploadPic/
+/service/uploadPicTest/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
