@@ -5,6 +5,7 @@ var $sql = require('../db/sqlMap')
 // 引入mysql转JSON
 var sqlformatJSON = require('../public/sqlformatJSON')
 var BookTypeShowDao = require('./BookTypeShowDao')
+var base64 = require('../public/base64')
 var jsonWrite = require('../public/jsonWrite')
 // 使用连接池,提升性能
 var pool = mysql.createPool($conn.mysql)
@@ -170,6 +171,7 @@ module.exports = {
       })
   },
   getTopHotBook: function (req, res, next) {
+    var rankHotBook
     getRankTopHotBook().then((json) => {
       var title = json.title
       var username = json.username
@@ -178,13 +180,23 @@ module.exports = {
       var booktype = json.booktype.split(',')[0]
       return BookTypeShowDao.getEveryType(booktype, 1)
     }).then((json) => {
+      rankHotBook = json
+      var getPicArr = []
+      for(var kj = 0; kj<json.length; kj++) {
+        getPicArr.push(base64.base64img(json[kj].picLocation))
+      }
+      return Promise.all(getPicArr)
+    }).then((json) => {
+      for(var jkj = 0; jkj<json.length; jkj++) {
+        rankHotBook[jkj].picBase64 = json[jkj]
+      }
       var rankBookType1 = []
       var rankBookType2 = []
-      if (json.length > 5) {
-        rankBookType1 = json.slice(0, 5)
-        rankBookType2 = json.slice(5, json.length)
+      if (rankHotBook.length > 5) {
+        rankBookType1 = rankHotBook.slice(0, 5)
+        rankBookType2 = rankHotBook.slice(5, rankHotBook.length)
       } else {
-        rankBookType1 = json
+        rankBookType1 = rankHotBook
       }
       var result = {
         code: '0',

@@ -66,7 +66,7 @@ var sqlMap = {
     // 记录最新阅读
     RecentLookingBook: 'INSERT recentlooking (username, looktitle, lookauthor, booktype) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE looktitle = ?, lookauthor = ?, booktype = ?',
     // 获取最新阅读书籍
-    getRecentLooking: 'select looktitle, lookauthor, booktype from recentlooking where username = ?'
+    getRecentLooking: 'select title, username, picLocation, booktype from article where title = (select looktitle from recentlooking where username = ? ) AND username = (select lookauthor from recentlooking where username = ?)'
   },
   // 首页获取新书、热门书
   getNewHotBook: {

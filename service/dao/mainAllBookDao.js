@@ -1,3 +1,4 @@
+const path = require('path')
 // 实现与数据库交互
 var mysql = require('mysql')
 var $conn = require('../db/db')
@@ -5,6 +6,7 @@ var $sql = require('../db/sqlMap')
 // 引入mysql转JSON
 var sqlformatJSON = require('../public/sqlformatJSON')
 var getBook = require('../public/getBook')
+var base64 = require('../public/base64')
 var jsonWrite = require('../public/jsonWrite')
 // 使用连接池,提升性能
 var pool = mysql.createPool($conn.mysql)
@@ -70,7 +72,7 @@ var recentRecommend = function (username) {
         console.log('搜索用户最近阅读数据库连接出错')
         reject(result)
       }
-      connection.query($sql.HotBookTop.getRecentLooking, [username], (err, result) => {
+      connection.query($sql.HotBookTop.getRecentLooking, [username, username], (err, result) => {
         if (err) {
           result = {
             code: '1',
@@ -104,7 +106,7 @@ var getRecommend = function (recentBooktype) {
   for (var i = 1; i < recommendArr.length; i++) {
     sqlsstr += `or booktype LIKE '%${recommendArr[i]}%'`
   }
-  var $recommendSQL = `select username, title from article where ${sqlsstr}`
+  var $recommendSQL = `select username, title, picLocation from article where ${sqlsstr}`
   var getRecommendpromise = new Promise(function (resolve, reject) {
     pool.getConnection(function (err, connection) {
       var result = {}
@@ -196,8 +198,11 @@ module.exports = {
     recentRecommend(username)
       .then((json) => {
         recentResult = json
-        var recentBooktype = json.booktype
-        return getRecommend(recentBooktype)
+        return base64.base64img(json.picLocation)
+      })
+      .then((json) => {
+        recentResult.picBase64 = json
+        return getRecommend(recentResult.booktype)
       })
       .then((json) => {
         // 如果大于等于三本，则推荐三本，否则全部返回
@@ -208,24 +213,27 @@ module.exports = {
             var num = Math.floor(Math.random() * recommendlen)
             recommendResult.push(json[num])
           }
-          result = {
-            code: '0',
-            data: {
-              recentResultData: recentResult,
-              recommendResultData: recommendResult
-            },
-            msg: '搜索完成'
-          }
+          return Promise.all([base64.base64img(recommendResult[0].picLocation), base64.base64img(recommendResult[1].picLocation), base64.base64img(recommendResult[2].picLocation)])
         } else {
+          var recommendResultPicArr = []
           recommendResult = json
-          result = {
-            code: '0',
-            data: {
-              recentResultData: recentResult,
-              recommendResultData: recommendResult
-            },
-            msg: '完成'
+          for (var k = 0; k < json.length; k++) {
+            recommendResultPicArr.push(base64.base64img(recommendResult[k].picLocation))
           }
+          return Promise.all(recommendResultPicArr)
+        }
+      })
+      .then((json) => {
+        for (var k = 0; k < recommendResult.length; k++) {
+          recommendResult[k].picBase64 = json[k]
+        }
+        result = {
+          code: '0',
+          data: {
+            recentResultData: recentResult,
+            recommendResultData: recommendResult
+          },
+          msg: '完成'
         }
         jsonWrite.jsonWrite(res, result)
       })

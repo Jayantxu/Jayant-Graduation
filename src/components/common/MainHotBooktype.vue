@@ -16,7 +16,8 @@
         <el-carousel :interval="5000" indicator-position="none">
           <el-carousel-item v-for="item of rankBookType0">
             <div class="inline-block font-white MainHotBookrecent1-2 ml30 mt10" v-for="item1 of item">
-              <img style="vertical-align:middle" class="MainHot-book-img hvr-grow-shadow" @click="lookArticle(item1.title, item1.username)" src="../../assets/Image/图片无法加载1.jpg" alt=""/>
+              <img style="vertical-align:middle" class="MainHot-book-img hvr-grow-shadow" @click="lookArticle(item1.title, item1.username)" v-if="item1.picBase64 !== ''" :src="item1.picBase64" alt=""/>
+              <img style="vertical-align:middle" class="MainHot-book-img hvr-grow-shadow" @click="lookArticle(item1.title, item1.username)" v-else src="../../assets/Image/图片无法加载1.jpg" alt=""/>
               <div style="overflow: hidden; width: 150px;">
                  <span class="font16 font-black MainHot-book-span inline-block hvr-buzz-out mt10">{{item1.title}}</span>
               </div>
@@ -57,6 +58,8 @@ export default {
           this.rankBooklen = json.data.len
           this.rankBookType1 = json.data.rankType1
           this.rankBookType2 = json.data.rankType2
+          console.log(json.data.rankType1)
+          console.log(json.data.rankType2)
           if (json.data.len > 5) {
             this.rankBookType0.push(json.data.rankType1)
             this.rankBookType0.push(json.data.rankType2)

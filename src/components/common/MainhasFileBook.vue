@@ -14,9 +14,10 @@
       </div>
       <div class="MainhasFileBook1-1 mt10 text-center">
         <div class="inline-block font-white MainhasFileBook1-2 ml30 mt10" v-for="item of MainhasFileBookList">
-          <img style="vertical-align:middle" class="MainhasFile-book-img hvr-wobble-to-bottom-right" @click="lookArticle(item.title, item.username)" src="../../assets/Image/图片无法加载1.jpg" alt=""/>
+          <img style="vertical-align:middle" class="MainhasFile-book-img hvr-wobble-to-bottom-right" @click="lookArticle(item.title, item.username)" v-if="item.picBase64 !== ''" :src="item.picBase64" alt=""/>
+          <img style="vertical-align:middle" class="MainhasFile-book-img hvr-wobble-to-bottom-right" @click="lookArticle(item.title, item.username)" v-else src="../../assets/Image/图片无法加载1.jpg" alt=""/>
           <div style="overflow: hidden; width: 150px;">
-            <span class="font16 font-black MainhasFile-book-span inline-block hvr-pop mt10">{{item.title}}</span>
+            <span class="font14 font-black MainhasFile-book-span inline-block hvr-pop mt10">{{item.title}}</span>
           </div>
         </div>
       </div>
@@ -46,14 +47,15 @@ export default {
       this.$http.get('/api/BookType/GetBook', {
         params: {
           bookTypeID: $typeID,
-          bookTypePage: $nowPage
+          bookTypePage: $nowPage,
+          bookMain: true
         }
       }).then((json) => { 
         var result = json.data
         if (result.code !== '0') {
           return Promise.reject(result.msg)
         }
-        this.MainhasFileBookList = result.data.BookList.slice(0,5)
+        this.MainhasFileBookList = result.data.BookList
         this.mainhasfileBookLoading = false
         this.mainhasfileBookShow = true
       }).catch((err) => {
